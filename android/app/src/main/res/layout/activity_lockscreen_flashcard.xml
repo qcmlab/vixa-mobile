@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0B1120"
+    android:padding="24dp">
+
+    <!-- Top Bar: Clock, App Name & Skip -->
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="حافظ | Hafedh"
+            android:textColor="#10B981"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/btn_dismiss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="تخطي ودخول للهاتف ✕"
+            android:textColor="#94A3B8"
+            android:textSize="13sp"
+            android:padding="8dp" />
+    </LinearLayout>
+
+    <!-- Center Card Box -->
+    <LinearLayout
+        android:id="@+id/center_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:background="@drawable/hafedh_widget_background"
+        android:padding="24dp">
+
+        <!-- Category Badge & Progress -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/lock_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📅 تاريخ بكالوريا"
+                android:textColor="#F59E0B"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:background="@drawable/hafedh_badge_background" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/lock_counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="مراجعة سريعة ⚡"
+                android:textColor="#94A3B8"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- Question -->
+        <TextView
+            android:id="@+id/lock_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ما هو تاريخ اندلاع الثورة التحريرية الجزائرية الكبرى؟"
+            android:textColor="#F8FAFC"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="16dp"
+            android:lineSpacingExtra="4dp" />
+
+        <!-- Answer (Initially Hidden) -->
+        <TextView
+            android:id="@+id/lock_answer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="01 نوفمبر 1954م على الساعة الصفر بعمليات عسكرية شملت كامل التراب الوطني."
+            android:textColor="#10B981"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            android:lineSpacingExtra="4dp" />
+
+        <!-- Action: Reveal Answer -->
+        <Button
+            android:id="@+id/btn_lock_reveal"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="👁️ كشف الإجابة"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:background="@drawable/hafedh_btn_primary_background"
+            android:layout_marginTop="8dp" />
+
+        <!-- Rating Buttons (Visible after answer reveal) -->
+        <LinearLayout
+            android:id="@+id/layout_lock_ratings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btn_lock_again"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:text="أعد ❌"
+                android:textColor="#EF4444"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:background="@drawable/hafedh_btn_background" />
+
+            <Button
+                android:id="@+id/btn_lock_good"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="حفظت ✅"
+                android:textColor="#10B981"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:background="@drawable/hafedh_btn_primary_background" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Bottom Hint -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="24dp"
+        android:text="تعلّم بطاقة في كل فتح للهاتف • بكالوريا 2026 🎓"
+        android:textColor="#64748B"
+        android:textSize="12sp"
+        android:gravity="center" />
+
+</RelativeLayout>
