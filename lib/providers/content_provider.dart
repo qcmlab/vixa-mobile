@@ -70,11 +70,24 @@ class ContentNotifier extends StateNotifier<ContentState> {
 
   Future<List<FlashcardModel>> fetchLessonCards(String lessonId) async {
     try {
-      final res = await _api.get('/cards?lesson_id=$lessonId');
-      if (res != null && res['success'] == true) {
-        final dynamic rawData = res['data'];
-        if (rawData is List) {
-          return rawData.map((c) => FlashcardModel.fromJson(c)).toList();
+      final res = await _api.get('/cards?lesson_id=$lessonId&page_size=100');
+      if (res != null) {
+        dynamic rawList;
+        if (res['items'] != null && res['items'] is List) {
+          rawList = res['items'];
+        } else if (res['data'] != null) {
+          if (res['data'] is List) {
+            rawList = res['data'];
+          } else if (res['data']['items'] != null && res['data']['items'] is List) {
+            rawList = res['data']['items'];
+          } else if (res['data']['cards'] != null && res['data']['cards'] is List) {
+            rawList = res['data']['cards'];
+          }
+        }
+        if (rawList != null && rawList is List) {
+          return rawList
+              .map((c) => FlashcardModel.fromJson(Map<String, dynamic>.from(c as Map)))
+              .toList();
         }
       }
     } catch (e) {

@@ -80,14 +80,25 @@ class FlashcardRepository implements IFlashcardRepository {
       return getFeedCards(forceRefresh: true);
     }
 
+    // 1. Try /decks/$deckId/study
     try {
       final response = await _api.get('/decks/$deckId/study');
-      if (response != null && response['data'] != null) {
-        final rawCards = response['data']['cards'] ?? response['data'];
-        if (rawCards is List) {
-          return rawCards.map((j) => FlashcardModel.fromJson(j)).toList();
-        }
-      }
+      final cards = _extractCardList(response);
+      if (cards.isNotEmpty) return cards;
+    } catch (_) {}
+
+    // 2. Try /decks/$deckId
+    try {
+      final response = await _api.get('/decks/$deckId');
+      final cards = _extractCardList(response);
+      if (cards.isNotEmpty) return cards;
+    } catch (_) {}
+
+    // 3. Try /cards?lesson_id=$deckId&page_size=100
+    try {
+      final response = await _api.get('/cards?lesson_id=$deckId&page_size=100');
+      final cards = _extractCardList(response);
+      if (cards.isNotEmpty) return cards;
     } catch (_) {}
 
     // Fallback filtered cards from curated feed
@@ -116,16 +127,14 @@ class FlashcardRepository implements IFlashcardRepository {
 
     // 2. Fetch from Network
     try {
-      String endpoint = '/flashcards?per_page=50';
+      String endpoint = '/cards?page_size=100';
       if (type != 'all') {
-        endpoint += '&type=$type';
+        endpoint += '&card_type=$type';
       }
 
       final response = await _api.get(endpoint);
-      if (response != null && response['data'] != null) {
-        final rawList = response['data'] as List<dynamic>;
-        final cards = rawList.map((j) => FlashcardModel.fromJson(j)).toList();
-
+      final cards = _extractCardList(response);
+      if (cards.isNotEmpty) {
         // Save to Cache with 24 hours TTL
         await _cache.put(cacheKey, cards.map((c) => c.toJson()).toList(), ttl: const Duration(hours: 24));
         return cards;
@@ -144,6 +153,38 @@ class FlashcardRepository implements IFlashcardRepository {
     final curated = _getCuratedBaccalaureateFeed();
     await _cache.put(cacheKey, curated.map((c) => c.toJson()).toList(), ttl: const Duration(hours: 48));
     return curated;
+  }
+
+  List<FlashcardModel> _extractCardList(dynamic response) {
+    if (response == null) return [];
+    dynamic rawList;
+    if (response is List) {
+      rawList = response;
+    } else if (response is Map) {
+      if (response['items'] != null && response['items'] is List) {
+        rawList = response['items'];
+      } else if (response['data'] != null) {
+        final d = response['data'];
+        if (d is List) {
+          rawList = d;
+        } else if (d is Map) {
+          if (d['items'] != null && d['items'] is List) {
+            rawList = d['items'];
+          } else if (d['cards'] != null && d['cards'] is List) {
+            rawList = d['cards'];
+          }
+        }
+      } else if (response['cards'] != null && response['cards'] is List) {
+        rawList = response['cards'];
+      }
+    }
+
+    if (rawList != null && rawList is List) {
+      return rawList
+          .map((j) => FlashcardModel.fromJson(Map<String, dynamic>.from(j as Map)))
+          .toList();
+    }
+    return [];
   }
 
   @override

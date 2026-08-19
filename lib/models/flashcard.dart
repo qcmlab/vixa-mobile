@@ -67,26 +67,49 @@ class FlashcardModel {
 
   factory FlashcardModel.fromJson(Map<String, dynamic> json) {
     List<String>? parsedOptions;
-    if (json['options'] != null) {
-      if (json['options'] is List) {
-        parsedOptions = (json['options'] as List).map((e) => e.toString()).toList();
-      }
+    if (json['options'] != null && json['options'] is List) {
+      parsedOptions = (json['options'] as List).map((e) => e.toString()).toList();
+    }
+
+    final id = json['id'] ?? json['card_id'] ?? '';
+    final rawType = json['card_type'] ?? json['type'] ?? json['modality'] ?? 'fact';
+    final question = json['question'] ?? json['front_prompt'] ?? json['front'] ?? '';
+    final answer = json['answer'] ?? json['back_answer'] ?? json['back'] ?? '';
+    final explanation = json['explanation'] ?? json['pedagogical_explanation'];
+    final hint = json['hint'] ?? json['mnemonic_hint'];
+    final subjectName = json['subject_name'] ?? json['subject'] ?? json['subject_title'];
+    final lessonTitle = json['lesson_title'] ?? json['lesson'] ?? json['lesson_name'];
+
+    // Normalize type string
+    String normalizedType = rawType.toString().toLowerCase();
+    if (normalizedType.contains('qcm')) {
+      normalizedType = 'qcm';
+    } else if (normalizedType.contains('date')) {
+      normalizedType = 'date';
+    } else if (normalizedType.contains('person')) {
+      normalizedType = 'person';
+    } else if (normalizedType.contains('term')) {
+      normalizedType = 'term';
+    } else if (normalizedType.contains('advice')) {
+      normalizedType = 'advice';
+    } else if (normalizedType.contains('classic') || normalizedType.contains('fact')) {
+      normalizedType = 'fact';
     }
 
     return FlashcardModel(
-      id: json['id'] ?? '',
-      lessonId: json['lesson_id'] ?? '',
-      type: json['type'] ?? 'fact',
-      question: json['question'] ?? '',
-      answer: json['answer'] ?? '',
-      explanation: json['explanation'],
-      difficulty: json['difficulty'] ?? 'medium',
-      source: json['source'],
-      subjectName: json['subject_name'] ?? json['subject'],
-      lessonTitle: json['lesson_title'] ?? json['lesson'],
+      id: id.toString(),
+      lessonId: (json['lesson_id'] ?? '').toString(),
+      type: normalizedType,
+      question: question.toString(),
+      answer: answer.toString(),
+      explanation: explanation?.toString(),
+      difficulty: (json['difficulty'] ?? 'medium').toString(),
+      source: json['source']?.toString(),
+      subjectName: subjectName?.toString(),
+      lessonTitle: lessonTitle?.toString(),
       options: parsedOptions,
       correctOptionIndex: json['correct_option_index'] as int?,
-      hint: json['hint'] ?? json['mnemonic_hint'],
+      hint: hint?.toString(),
       isFavorite: json['is_favorite'] ?? false,
     );
   }
