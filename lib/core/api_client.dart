@@ -36,41 +36,47 @@ class ApiClient {
   Future<dynamic> get(String endpoint, {bool includeAuth = true}) async {
     final url = Uri.parse('${AppConstants.apiBaseUrl}$endpoint');
     try {
-      final response = await http.get(url, headers: _buildHeaders(includeAuth: includeAuth));
+      final response = await http
+          .get(url, headers: _buildHeaders(includeAuth: includeAuth))
+          .timeout(const Duration(seconds: 4));
       return _handleResponse(response);
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException(message: 'فشل الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت.');
+      throw ApiException(message: 'تعذر الاتصال بالخادم. سيتم العمل بالوضع المحلي بدون إنترنت.');
     }
   }
 
   Future<dynamic> post(String endpoint, {dynamic body, bool includeAuth = true}) async {
     final url = Uri.parse('${AppConstants.apiBaseUrl}$endpoint');
     try {
-      final response = await http.post(
-        url,
-        headers: _buildHeaders(includeAuth: includeAuth),
-        body: body != null ? jsonEncode(body) : null,
-      );
+      final response = await http
+          .post(
+            url,
+            headers: _buildHeaders(includeAuth: includeAuth),
+            body: body != null ? jsonEncode(body) : null,
+          )
+          .timeout(const Duration(seconds: 4));
       return _handleResponse(response);
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException(message: 'فشل الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت.');
+      throw ApiException(message: 'تعذر الاتصال بالخادم. سيتم العمل بالوضع المحلي بدون إنترنت.');
     }
   }
 
   Future<dynamic> put(String endpoint, {dynamic body, bool includeAuth = true}) async {
     final url = Uri.parse('${AppConstants.apiBaseUrl}$endpoint');
     try {
-      final response = await http.put(
-        url,
-        headers: _buildHeaders(includeAuth: includeAuth),
-        body: body != null ? jsonEncode(body) : null,
-      );
+      final response = await http
+          .put(
+            url,
+            headers: _buildHeaders(includeAuth: includeAuth),
+            body: body != null ? jsonEncode(body) : null,
+          )
+          .timeout(const Duration(seconds: 4));
       return _handleResponse(response);
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException(message: 'فشل الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت.');
+      throw ApiException(message: 'تعذر الاتصال بالخادم. سيتم العمل بالوضع المحلي بدون إنترنت.');
     }
   }
 

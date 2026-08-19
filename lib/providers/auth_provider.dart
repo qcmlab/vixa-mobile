@@ -130,6 +130,30 @@ class AuthNotifier extends StateNotifier<AuthState> {
     return false;
   }
 
+  void loginOfflineDemo() {
+    final demoUser = UserModel(
+      id: 'demo_student_1',
+      email: 'student@hafedh.dz',
+      role: 'student',
+      firstName: 'طالب',
+      lastName: 'البكالوريا',
+      isActive: true,
+      profile: StudentProfile(
+        grade: 3,
+        stream: 'علوم تجريبية',
+        dailyGoal: 15,
+        preferredNotificationTime: '18:00',
+        timezone: 'Africa/Algiers',
+      ),
+      streak: UserStreak(
+        currentStreak: 5,
+        longestStreak: 12,
+        totalReviewsCount: 142,
+      ),
+    );
+    state = state.copyWith(user: demoUser, isLoading: false, clearError: true);
+  }
+
   Future<void> logout() async {
     await AppStorage.clearAuth();
     state = state.copyWith(clearUser: true, isLoading: false, clearError: true);
