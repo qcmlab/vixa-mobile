@@ -140,7 +140,7 @@ class _DateFeedCardState extends State<DateFeedCard> {
                       GestureDetector(
                         onTap: () => setState(() => _isRevealed = true),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               colors: [AppColors.accentGold, Color(0xFFD97706)],
@@ -159,12 +159,16 @@ class _DateFeedCardState extends State<DateFeedCard> {
                             children: [
                               Icon(Icons.visibility_rounded, size: 16, color: Colors.black),
                               SizedBox(width: 8),
-                              Text(
-                                'كشف الأهمية التاريخية والحيلة الذهنية',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
+                              Flexible(
+                                child: Text(
+                                  'كشف الأهمية التاريخية',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],

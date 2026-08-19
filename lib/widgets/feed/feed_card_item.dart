@@ -60,10 +60,10 @@ class _FeedCardItemState extends State<FeedCardItem> {
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.only(
-                right: 64, // Space for side actions
-                left: 8,
-                top: 54,
-                bottom: 50,
+                right: 56, // Space for side actions
+                left: 6,
+                top: 50,
+                bottom: 44,
               ),
               child: _buildCardByType(),
             ),
@@ -72,8 +72,8 @@ class _FeedCardItemState extends State<FeedCardItem> {
 
         // 3. Side Actions Column (TikTok-style floating overlay)
         Positioned(
-          right: 8,
-          bottom: 70,
+          right: 6,
+          bottom: 60,
           child: FeedSideActions(
             card: widget.card,
             isFlipped: _isFlipped,
@@ -87,9 +87,9 @@ class _FeedCardItemState extends State<FeedCardItem> {
 
         // 4. Bottom Info Overlay (Subject, Lesson Breadcrumbs)
         Positioned(
-          left: 14,
-          right: 74,
-          bottom: 12,
+          left: 10,
+          right: 68,
+          bottom: 10,
           child: _buildBottomMetaOverlay(),
         ),
 

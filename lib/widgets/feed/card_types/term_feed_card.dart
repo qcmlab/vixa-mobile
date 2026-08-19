@@ -105,7 +105,7 @@ class _TermFeedCardState extends State<TermFeedCard> {
                       GestureDetector(
                         onTap: () => setState(() => _isAnswerRevealed = true),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               colors: [AppColors.accentTeal, Color(0xFF0D9488)],
@@ -124,12 +124,16 @@ class _TermFeedCardState extends State<TermFeedCard> {
                             children: [
                               Icon(Icons.auto_stories_rounded, size: 16, color: Colors.white),
                               SizedBox(width: 8),
-                              Text(
-                                'إظهار التعريف والكلمات المفتاحية',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
+                              Flexible(
+                                child: Text(
+                                  'كشف التعريف والمصطلح',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],

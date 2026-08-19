@@ -130,7 +130,7 @@ class _PersonalityFeedCardState extends State<PersonalityFeedCard> {
                       GestureDetector(
                         onTap: () => setState(() => _isAnswerRevealed = true),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               colors: [AppColors.accentPurple, Color(0xFF6D28D9)],
@@ -149,12 +149,16 @@ class _PersonalityFeedCardState extends State<PersonalityFeedCard> {
                             children: [
                               Icon(Icons.badge_rounded, size: 16, color: Colors.white),
                               SizedBox(width: 8),
-                              Text(
-                                'كشف التعريف والبطاقة البيوغرافية',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
+                              Flexible(
+                                child: Text(
+                                  'كشف بطاقة الشخصية',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],
