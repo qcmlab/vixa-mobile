@@ -16,6 +16,8 @@ class TiktokFeedState {
   final String selectedSubject; // 'all', 'history', 'geography'
   final String selectedType; // 'all', 'qcm', 'date', 'person', 'term', 'fact'
   final Map<String, String> cardFeedbackMap; // cardId -> 'notYet' | 'partially' | 'mastered'
+  final String activeDeckId;
+  final String activeDeckTitle;
 
   TiktokFeedState({
     this.cards = const [],
@@ -27,6 +29,8 @@ class TiktokFeedState {
     this.selectedSubject = 'all',
     this.selectedType = 'all',
     this.cardFeedbackMap = const {},
+    this.activeDeckId = 'all_mixed',
+    this.activeDeckTitle = 'بنك البكالوريا الشامل',
   });
 
   TiktokFeedState copyWith({
@@ -39,6 +43,8 @@ class TiktokFeedState {
     String? selectedSubject,
     String? selectedType,
     Map<String, String>? cardFeedbackMap,
+    String? activeDeckId,
+    String? activeDeckTitle,
   }) {
     return TiktokFeedState(
       cards: cards ?? this.cards,
@@ -50,6 +56,8 @@ class TiktokFeedState {
       selectedSubject: selectedSubject ?? this.selectedSubject,
       selectedType: selectedType ?? this.selectedType,
       cardFeedbackMap: cardFeedbackMap ?? this.cardFeedbackMap,
+      activeDeckId: activeDeckId ?? this.activeDeckId,
+      activeDeckTitle: activeDeckTitle ?? this.activeDeckTitle,
     );
   }
 }
@@ -160,7 +168,7 @@ class TiktokFeedNotifier extends StateNotifier<TiktokFeedState> {
   }
 
   /// Sets any custom multimodal deck directly into the feed screen
-  void loadDeckCards(List<FlashcardModel> customCards) {
+  void loadDeckCards(List<FlashcardModel> customCards, {String? deckTitle, String? deckId}) {
     if (customCards.isEmpty) return;
     final prioritized = _organizeDeckByPriority(customCards, state.cardFeedbackMap);
     state = state.copyWith(
@@ -168,7 +176,32 @@ class TiktokFeedNotifier extends StateNotifier<TiktokFeedState> {
       isLoading: false,
       currentIndex: 0,
       selectedSubject: 'all',
+      activeDeckId: deckId ?? 'custom_deck',
+      activeDeckTitle: deckTitle ?? 'رزمة مخصصة',
     );
+  }
+
+  /// Selects and loads any deck by its ID from the repository
+  Future<void> selectDeck(String deckId, {String? title}) async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final deckCards = await _repository.getCardsByDeckId(deckId);
+      final prioritized = _organizeDeckByPriority(deckCards, state.cardFeedbackMap);
+      state = state.copyWith(
+        cards: prioritized,
+        isLoading: false,
+        currentIndex: 0,
+        selectedSubject: 'all',
+        activeDeckId: deckId,
+        activeDeckTitle: title ?? 'رزمة تعليمية',
+      );
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getAvailableDecks() async {
+    return _repository.getAvailableDecks();
   }
 
   void setCurrentIndex(int index) {

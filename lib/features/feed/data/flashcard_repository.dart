@@ -5,6 +5,8 @@ import '../../../models/flashcard.dart';
 
 abstract class IFlashcardRepository {
   Future<List<FlashcardModel>> getFeedCards({String type = 'all', bool forceRefresh = false});
+  Future<List<Map<String, dynamic>>> getAvailableDecks();
+  Future<List<FlashcardModel>> getCardsByDeckId(String deckId);
   Future<void> submitCardReview(String cardId, int rating, {int responseTimeMs = 2500});
   Future<void> flushOfflineReviews();
 }
@@ -21,6 +23,82 @@ class FlashcardRepository implements IFlashcardRepository {
   })  : _api = api,
         _cache = cache,
         _offlineSync = offlineSync;
+
+  @override
+  Future<List<Map<String, dynamic>>> getAvailableDecks() async {
+    try {
+      final response = await _api.get('/decks');
+      if (response != null && response['data'] != null && response['data'] is List) {
+        final list = (response['data'] as List).map((d) => Map<String, dynamic>.from(d as Map)).toList();
+        if (list.isNotEmpty) return list;
+      }
+    } catch (_) {}
+
+    // Fallback curated multi-modal decks list
+    return [
+      {
+        'id': 'all_mixed',
+        'title': '🎲 بنك البكالوريا الشامل (جميع الوحدات والأنماط)',
+        'subject': 'التاريخ والجغرافيا',
+        'card_count': 50,
+        'badge': 'موصى به ⭐',
+      },
+      {
+        'id': 'deck_cold_war',
+        'title': '⚔️ تطور العالم وبروز الصراع (الثنائية القطبية)',
+        'subject': 'التاريخ',
+        'card_count': 18,
+        'badge': 'تاريخ 📜',
+      },
+      {
+        'id': 'deck_algerian_rev',
+        'title': '🇩🇿 الثورة التحريرية الجزائرية الكبرى (1954 - 1962)',
+        'subject': 'التاريخ',
+        'card_count': 22,
+        'badge': 'تاريخ 📜',
+      },
+      {
+        'id': 'deck_world_economy',
+        'title': '📈 إشكالية التقدم والتخلف والمبادلات العالمية',
+        'subject': 'الجغرافيا',
+        'card_count': 16,
+        'badge': 'جغرافيا 🌍',
+      },
+      {
+        'id': 'deck_economic_powers',
+        'title': '🗽 القوى الاقتصادية الكبرى (USA، الاتحاد الأوروبي، شرق آسيا)',
+        'subject': 'الجغرافيا',
+        'card_count': 14,
+        'badge': 'جغرافيا 🌍',
+      },
+    ];
+  }
+
+  @override
+  Future<List<FlashcardModel>> getCardsByDeckId(String deckId) async {
+    if (deckId == 'all_mixed') {
+      return getFeedCards(forceRefresh: true);
+    }
+
+    try {
+      final response = await _api.get('/decks/$deckId/study');
+      if (response != null && response['data'] != null) {
+        final rawCards = response['data']['cards'] ?? response['data'];
+        if (rawCards is List) {
+          return rawCards.map((j) => FlashcardModel.fromJson(j)).toList();
+        }
+      }
+    } catch (_) {}
+
+    // Fallback filtered cards from curated feed
+    final allCards = _getCuratedBaccalaureateFeed();
+    if (deckId == 'deck_cold_war') {
+      return allCards.where((c) => c.subjectName == 'التاريخ').toList();
+    } else if (deckId == 'deck_world_economy' || deckId == 'deck_economic_powers') {
+      return allCards.where((c) => c.subjectName == 'الجغرافيا').toList();
+    }
+    return allCards;
+  }
 
   @override
   Future<List<FlashcardModel>> getFeedCards({String type = 'all', bool forceRefresh = false}) async {

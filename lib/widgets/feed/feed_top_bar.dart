@@ -5,6 +5,7 @@ import '../../core/constants.dart';
 import '../../providers/language_provider.dart';
 import '../../providers/tiktok_feed_provider.dart';
 import '../language_selector_sheet.dart';
+import 'deck_selector_sheet.dart';
 
 class FeedTopBar extends ConsumerWidget {
   const FeedTopBar({super.key});
@@ -14,6 +15,7 @@ class FeedTopBar extends ConsumerWidget {
     final streakDays = ref.watch(tiktokFeedProvider.select((s) => s.streakDays));
     final masteredTodayCount = ref.watch(tiktokFeedProvider.select((s) => s.masteredTodayCount));
     final selectedSubject = ref.watch(tiktokFeedProvider.select((s) => s.selectedSubject));
+    final activeDeckTitle = ref.watch(tiktokFeedProvider.select((s) => s.activeDeckTitle));
     final currentLang = ref.watch(languageProvider).languageCode.toUpperCase();
     final t = ref.watch(languageProvider).t;
     final feedNotifier = ref.read(tiktokFeedProvider.notifier);
@@ -30,7 +32,7 @@ class FeedTopBar extends ConsumerWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.black.withValues(alpha: 0.75),
+            Colors.black.withValues(alpha: 0.8),
             Colors.transparent,
           ],
         ),
@@ -38,7 +40,7 @@ class FeedTopBar extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Row 1: Streak + Daily Goal + Language Switcher
+          // Row 1: Streak + Deck Switcher + Daily Mastered + Language
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -66,28 +68,35 @@ class FeedTopBar extends ConsumerWidget {
                 ),
               ),
 
-              // Language Quick Switcher Pill
+              // Active Deck Switcher Pill (Tap to select any deck)
               GestureDetector(
-                onTap: () => LanguageSelectorSheet.show(context),
+                onTap: () => DeckSelectorSheet.show(context),
                 child: Container(
+                  constraints: BoxConstraints(maxWidth: 150.w),
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceLight.withValues(alpha: 0.8),
+                    color: AppColors.primary.withValues(alpha: 0.18),
                     borderRadius: BorderRadius.circular(999.r),
-                    border: Border.all(color: AppColors.cardBorder),
+                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.4)),
                   ),
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.language_rounded, size: 12.sp, color: AppColors.primary),
+                      Icon(Icons.style_rounded, size: 11.sp, color: AppColors.primary),
                       SizedBox(width: 4.w),
-                      Text(
-                        currentLang,
-                        style: TextStyle(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 10.sp,
+                      Flexible(
+                        child: Text(
+                          activeDeckTitle,
+                          style: TextStyle(
+                            color: AppColors.primaryLight,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10.sp,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      Icon(Icons.arrow_drop_down_rounded, size: 14.sp, color: AppColors.primary),
                     ],
                   ),
                 ),
@@ -106,7 +115,7 @@ class FeedTopBar extends ConsumerWidget {
                     Icon(Icons.stars_rounded, size: 13.sp, color: AppColors.primary),
                     SizedBox(width: 4.w),
                     Text(
-                      '$masteredTodayCount ${t('feed.mastered_today')}',
+                      '$masteredTodayCount',
                       style: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
@@ -114,6 +123,33 @@ class FeedTopBar extends ConsumerWidget {
                       ),
                     ),
                   ],
+                ),
+              ),
+
+              // Language Quick Switcher Pill
+              GestureDetector(
+                onTap: () => LanguageSelectorSheet.show(context),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceLight.withValues(alpha: 0.8),
+                    borderRadius: BorderRadius.circular(999.r),
+                    border: Border.all(color: AppColors.cardBorder),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.language_rounded, size: 11.sp, color: AppColors.primary),
+                      SizedBox(width: 3.w),
+                      Text(
+                        currentLang,
+                        style: TextStyle(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 9.5.sp,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
