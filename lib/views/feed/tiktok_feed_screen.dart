@@ -280,7 +280,7 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
-              onPressed: () => notifier.loadFeed(refresh: true),
+              onPressed: () => notifier.loadFeed(forceRefresh: true),
               icon: const Icon(Icons.refresh_rounded),
               label: const Text('إعادة تحميل التلقيم'),
               style: ElevatedButton.styleFrom(

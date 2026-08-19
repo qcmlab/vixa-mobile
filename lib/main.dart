@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'core/constants.dart';
+import 'core/di/injection_container.dart';
 import 'core/storage.dart';
 import 'providers/auth_provider.dart';
 import 'views/auth/login_screen.dart';
@@ -10,10 +12,14 @@ import 'views/main_navigation_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppStorage.init();
+  final sharedPrefs = await SharedPreferences.getInstance();
 
   runApp(
-    const ProviderScope(
-      child: HafedhApp(),
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+      ],
+      child: const HafedhApp(),
     ),
   );
 }
