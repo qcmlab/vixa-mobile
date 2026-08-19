@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants.dart';
 import 'content/subjects_screen.dart';
 import 'dashboard/home_screen.dart';
-import 'flashcards/flashcards_screen.dart';
+import 'feed/tiktok_feed_screen.dart';
 import 'profile/profile_screen.dart';
 import 'quizzes/quizzes_screen.dart';
 
@@ -19,8 +19,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     final screens = [
+      const TiktokFeedScreen(),
       HomeScreen(onTabChange: (idx) => setState(() => _currentIndex = idx)),
-      const FlashcardsScreen(),
       const SubjectsScreen(),
       const QuizzesScreen(),
       const ProfileScreen(),
@@ -50,16 +50,18 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home_filled),
+              icon: Icon(Icons.style_outlined),
+              activeIcon: Icon(Icons.style_rounded),
+              label: 'تلقيم الحفظ',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.dashboard_outlined),
+              activeIcon: Icon(Icons.dashboard_rounded),
               label: 'الرئيسية',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.style_rounded),
-              activeIcon: Icon(Icons.style),
-              label: 'البطاقات',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book_rounded),
+              icon: Icon(Icons.book_outlined),
+              activeIcon: Icon(Icons.book_rounded),
               label: 'المناهج',
             ),
             BottomNavigationBarItem(
@@ -78,3 +80,4 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     );
   }
 }
+

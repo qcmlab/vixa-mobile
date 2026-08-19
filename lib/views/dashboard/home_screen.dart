@@ -182,6 +182,76 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ],
                   ),
                 ),
+                const SizedBox(height: 18),
+
+                // TikTok Style Quick Feed Launcher Banner
+                GestureDetector(
+                  onTap: () => widget.onTabChange?.call(0),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF1E1B4B), Color(0xFF312E81)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.accentPurple.withValues(alpha: 0.5), width: 1.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.accentPurple.withValues(alpha: 0.25),
+                          blurRadius: 14,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: AppColors.accentPurple.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.style_rounded,
+                            color: AppColors.accentPurple,
+                            size: 26,
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '📱 تلقيم الحفظ السريع (Feed)',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                'تصفح عمودي لانهائي بالأسئلة، التواريخ والشخصيات',
+                                style: TextStyle(
+                                  color: Color(0xFFC7D2FE),
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 14,
+                          color: AppColors.accentPurple,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 24),
 
                 // Learning Metrics Grid

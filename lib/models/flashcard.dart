@@ -1,12 +1,18 @@
 class FlashcardModel {
   final String id;
   final String lessonId;
-  final String type; // person, date, term, event, fact
+  final String type; // person, date, term, event, fact, qcm, advice
   final String question;
   final String answer;
   final String? explanation;
   final String difficulty; // easy, medium, hard
   final String? source;
+  final String? subjectName;
+  final String? lessonTitle;
+  final List<String>? options;
+  final int? correctOptionIndex;
+  final String? hint;
+  final bool isFavorite;
 
   FlashcardModel({
     required this.id,
@@ -17,9 +23,56 @@ class FlashcardModel {
     this.explanation,
     required this.difficulty,
     this.source,
+    this.subjectName,
+    this.lessonTitle,
+    this.options,
+    this.correctOptionIndex,
+    this.hint,
+    this.isFavorite = false,
   });
 
+  FlashcardModel copyWith({
+    String? id,
+    String? lessonId,
+    String? type,
+    String? question,
+    String? answer,
+    String? explanation,
+    String? difficulty,
+    String? source,
+    String? subjectName,
+    String? lessonTitle,
+    List<String>? options,
+    int? correctOptionIndex,
+    String? hint,
+    bool? isFavorite,
+  }) {
+    return FlashcardModel(
+      id: id ?? this.id,
+      lessonId: lessonId ?? this.lessonId,
+      type: type ?? this.type,
+      question: question ?? this.question,
+      answer: answer ?? this.answer,
+      explanation: explanation ?? this.explanation,
+      difficulty: difficulty ?? this.difficulty,
+      source: source ?? this.source,
+      subjectName: subjectName ?? this.subjectName,
+      lessonTitle: lessonTitle ?? this.lessonTitle,
+      options: options ?? this.options,
+      correctOptionIndex: correctOptionIndex ?? this.correctOptionIndex,
+      hint: hint ?? this.hint,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
+
   factory FlashcardModel.fromJson(Map<String, dynamic> json) {
+    List<String>? parsedOptions;
+    if (json['options'] != null) {
+      if (json['options'] is List) {
+        parsedOptions = (json['options'] as List).map((e) => e.toString()).toList();
+      }
+    }
+
     return FlashcardModel(
       id: json['id'] ?? '',
       lessonId: json['lesson_id'] ?? '',
@@ -29,7 +82,32 @@ class FlashcardModel {
       explanation: json['explanation'],
       difficulty: json['difficulty'] ?? 'medium',
       source: json['source'],
+      subjectName: json['subject_name'] ?? json['subject'],
+      lessonTitle: json['lesson_title'] ?? json['lesson'],
+      options: parsedOptions,
+      correctOptionIndex: json['correct_option_index'] as int?,
+      hint: json['hint'] ?? json['mnemonic_hint'],
+      isFavorite: json['is_favorite'] ?? false,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'lesson_id': lessonId,
+      'type': type,
+      'question': question,
+      'answer': answer,
+      'explanation': explanation,
+      'difficulty': difficulty,
+      'source': source,
+      'subject_name': subjectName,
+      'lesson_title': lessonTitle,
+      'options': options,
+      'correct_option_index': correctOptionIndex,
+      'hint': hint,
+      'is_favorite': isFavorite,
+    };
   }
 }
 
