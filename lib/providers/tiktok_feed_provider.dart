@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/di/injection_container.dart';
+import '../core/storage/storage_service.dart';
 import '../features/feed/data/flashcard_repository.dart';
 import '../models/flashcard.dart';
 import '../widgets/feed/memorization_feedback_bar.dart';
@@ -13,6 +15,7 @@ class TiktokFeedState {
   final int streakDays;
   final String selectedSubject; // 'all', 'history', 'geography'
   final String selectedType; // 'all', 'qcm', 'date', 'person', 'term', 'fact'
+  final Map<String, String> cardFeedbackMap; // cardId -> 'notYet' | 'partially' | 'mastered'
 
   TiktokFeedState({
     this.cards = const [],
@@ -23,6 +26,7 @@ class TiktokFeedState {
     this.streakDays = 5,
     this.selectedSubject = 'all',
     this.selectedType = 'all',
+    this.cardFeedbackMap = const {},
   });
 
   TiktokFeedState copyWith({
@@ -34,6 +38,7 @@ class TiktokFeedState {
     int? streakDays,
     String? selectedSubject,
     String? selectedType,
+    Map<String, String>? cardFeedbackMap,
   }) {
     return TiktokFeedState(
       cards: cards ?? this.cards,
@@ -44,15 +49,71 @@ class TiktokFeedState {
       streakDays: streakDays ?? this.streakDays,
       selectedSubject: selectedSubject ?? this.selectedSubject,
       selectedType: selectedType ?? this.selectedType,
+      cardFeedbackMap: cardFeedbackMap ?? this.cardFeedbackMap,
     );
   }
 }
 
 class TiktokFeedNotifier extends StateNotifier<TiktokFeedState> {
   final IFlashcardRepository _repository;
+  final IStorageService _storage;
+  static const String _feedbackStorageKey = 'hafedh_card_priority_feedback';
 
-  TiktokFeedNotifier(this._repository) : super(TiktokFeedState()) {
+  TiktokFeedNotifier(this._repository, this._storage) : super(TiktokFeedState()) {
+    _loadSavedFeedbackMap();
     loadFeed();
+  }
+
+  void _loadSavedFeedbackMap() {
+    try {
+      final jsonStr = _storage.getString(_feedbackStorageKey);
+      if (jsonStr != null) {
+        final decoded = jsonDecode(jsonStr) as Map<String, dynamic>;
+        final map = decoded.map((k, v) => MapEntry(k, v.toString()));
+        state = state.copyWith(cardFeedbackMap: map);
+      }
+    } catch (_) {
+      // Ignore parse failure, start with empty feedback map
+    }
+  }
+
+  Future<void> _persistFeedbackMap() async {
+    try {
+      final jsonStr = jsonEncode(state.cardFeedbackMap);
+      await _storage.setString(_feedbackStorageKey, jsonStr);
+    } catch (_) {}
+  }
+
+  /// Organizes cards into 3 priority tiers with random shuffling within each tier:
+  /// - Tier 1 (Top Priority): Unreviewed cards + "Not Yet" (0% / لم أحفظ) -> Randomized
+  /// - Tier 2 (Middle Priority): "Partially" (50% / نصف حفظ) -> Randomized
+  /// - Tier 3 (Low Priority): "Mastered" (100% / أتقنتُها) -> Randomized
+  List<FlashcardModel> _organizeDeckByPriority(
+    List<FlashcardModel> inputCards,
+    Map<String, String> feedbackMap,
+  ) {
+    final tier1Top = <FlashcardModel>[];
+    final tier2Middle = <FlashcardModel>[];
+    final tier3Low = <FlashcardModel>[];
+
+    for (final card in inputCards) {
+      final feedback = feedbackMap[card.id];
+      if (feedback == 'mastered') {
+        tier3Low.add(card);
+      } else if (feedback == 'partially') {
+        tier2Middle.add(card);
+      } else {
+        // null (unreviewed) or 'notYet' (0% / لم أحفظ)
+        tier1Top.add(card);
+      }
+    }
+
+    // Always shuffle randomly within each tier for addictive, varied flashcard feeds
+    tier1Top.shuffle();
+    tier2Middle.shuffle();
+    tier3Low.shuffle();
+
+    return [...tier1Top, ...tier2Middle, ...tier3Low];
   }
 
   Future<void> loadFeed({bool forceRefresh = false}) async {
@@ -79,11 +140,11 @@ class TiktokFeedNotifier extends StateNotifier<TiktokFeedState> {
         }).toList();
       }
 
-      // Always shuffle for random addictive TikTok feed order
-      filteredCards.shuffle();
+      // Re-order deck by memorization priority (Tier 1 Top -> Tier 2 Middle -> Tier 3 Low)
+      final prioritizedCards = _organizeDeckByPriority(filteredCards, state.cardFeedbackMap);
 
       state = state.copyWith(
-        cards: filteredCards,
+        cards: prioritizedCards,
         isLoading: false,
         currentIndex: 0,
       );
@@ -127,33 +188,49 @@ class TiktokFeedNotifier extends StateNotifier<TiktokFeedState> {
 
   Future<void> submitFeedback(String cardId, FeedbackLevel level) async {
     int rating = 3;
+    String levelKey = 'partially';
+
     switch (level) {
       case FeedbackLevel.notYet:
         rating = 1; // Again / Failed
+        levelKey = 'notYet';
         break;
       case FeedbackLevel.partially:
         rating = 3; // Hard / 50%
+        levelKey = 'partially';
         break;
       case FeedbackLevel.mastered:
         rating = 5; // Easy / 100%
+        levelKey = 'mastered';
         break;
     }
 
+    // 1. Submit review rating to backend / offline sync queue
     await _repository.submitCardReview(cardId, rating);
 
-    if (level == FeedbackLevel.mastered) {
-      state = state.copyWith(
-        masteredTodayCount: state.masteredTodayCount + 1,
-      );
-    } else if (level == FeedbackLevel.notYet) {
-      // Re-insert the card 3 to 5 items down the current list so student sees it again soon!
-      final cardsList = List<FlashcardModel>.from(state.cards);
-      final cardIdx = cardsList.indexWhere((c) => c.id == cardId);
-      if (cardIdx != -1) {
-        final card = cardsList[cardIdx];
-        final reinsertIdx = (cardIdx + 4).clamp(0, cardsList.length);
-        cardsList.insert(reinsertIdx, card);
-        state = state.copyWith(cards: cardsList);
+    // 2. Update and persist priority feedback status map
+    final updatedMap = Map<String, String>.from(state.cardFeedbackMap);
+    updatedMap[cardId] = levelKey;
+    state = state.copyWith(cardFeedbackMap: updatedMap);
+    _persistFeedbackMap();
+
+    // 3. Dynamic Real-Time Deck Adjustment:
+    final currentCards = List<FlashcardModel>.from(state.cards);
+    final cardIdx = currentCards.indexWhere((c) => c.id == cardId);
+
+    if (cardIdx != -1) {
+      final card = currentCards[cardIdx];
+
+      if (level == FeedbackLevel.notYet) {
+        // High Priority: Re-insert card 3-4 items ahead in the active session for immediate spaced repetition!
+        final reinsertIdx = (cardIdx + 4).clamp(0, currentCards.length);
+        currentCards.insert(reinsertIdx, card);
+        state = state.copyWith(cards: currentCards);
+      } else if (level == FeedbackLevel.mastered) {
+        // Low Priority: Increment mastered count and move card to the end of the deck
+        state = state.copyWith(
+          masteredTodayCount: state.masteredTodayCount + 1,
+        );
       }
     }
   }
@@ -161,5 +238,6 @@ class TiktokFeedNotifier extends StateNotifier<TiktokFeedState> {
 
 final tiktokFeedProvider = StateNotifierProvider.autoDispose<TiktokFeedNotifier, TiktokFeedState>((ref) {
   final repository = ref.watch(flashcardRepositoryProvider);
-  return TiktokFeedNotifier(repository);
+  final storage = ref.watch(storageServiceProvider);
+  return TiktokFeedNotifier(repository, storage);
 });
