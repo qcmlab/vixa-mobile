@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants.dart';
 import '../../providers/tiktok_feed_provider.dart';
 import '../../widgets/feed/feed_card_item.dart';
+import '../../widgets/feed/feed_top_bar.dart';
 import '../../widgets/feed/memorization_feedback_bar.dart';
 
 class TiktokFeedScreen extends ConsumerStatefulWidget {
@@ -52,20 +53,20 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message, style: const TextStyle(fontWeight: FontWeight.bold)),
-        duration: const Duration(milliseconds: 1400),
+        content: Text(message, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+        duration: const Duration(milliseconds: 1200),
         backgroundColor: bgColor,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
 
-    // Auto-advance smoothly to next card after brief delay for smooth addictive learning
-    Future.delayed(const Duration(milliseconds: 700), () {
+    // Auto-advance smoothly to next card after brief delay
+    Future.delayed(const Duration(milliseconds: 650), () {
       if (mounted && _pageController.hasClients) {
         _pageController.nextPage(
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeInOutCubic,
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeOutCubic,
         );
       }
     });
@@ -92,198 +93,54 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final feedState = ref.watch(tiktokFeedProvider);
+    final isLoading = ref.watch(tiktokFeedProvider.select((s) => s.isLoading));
+    final cards = ref.watch(tiktokFeedProvider.select((s) => s.cards));
     final feedNotifier = ref.read(tiktokFeedProvider.notifier);
 
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
-          // 1. Full-Screen Vertical Paging Feed
-          if (feedState.isLoading)
+          // 1. Ultra-Smooth Full-Screen Vertical Paging Feed
+          if (isLoading)
             const Center(
               child: CircularProgressIndicator(color: AppColors.primary),
             )
-          else if (feedState.cards.isEmpty)
+          else if (cards.isEmpty)
             _buildEmptyFeed(feedNotifier)
           else
             PageView.builder(
               controller: _pageController,
               scrollDirection: Axis.vertical,
-              physics: const BouncingScrollPhysics(),
-              itemCount: feedState.cards.length,
-              onPageChanged: (index) {
-                feedNotifier.setCurrentIndex(index);
-              },
+              physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+              allowImplicitScrolling: true,
+              itemCount: cards.length,
               itemBuilder: (context, index) {
-                final card = feedState.cards[index];
-                return FeedCardItem(
-                  card: card,
-                  onFeedback: (level) => _handleFeedbackAction(card.id, level, index),
-                  onToggleFavorite: () {
-                    feedNotifier.toggleFavorite(card.id);
-                  },
-                  onAudioPlay: () {
-                    _showAudioSnackbar('🔊 جاري قراءة نص البطاقة صوتياً...');
-                  },
+                final card = cards[index];
+                return RepaintBoundary(
+                  key: ValueKey(card.id),
+                  child: FeedCardItem(
+                    card: card,
+                    onFeedback: (level) => _handleFeedbackAction(card.id, level, index),
+                    onToggleFavorite: () {
+                      feedNotifier.toggleFavorite(card.id);
+                    },
+                    onAudioPlay: () {
+                      _showAudioSnackbar('🔊 جاري قراءة نص البطاقة صوتياً...');
+                    },
+                  ),
                 );
               },
             ),
 
-          // 2. Floating Top Header Overlay
-          Positioned(
+          // 2. Isolated Floating Top Header Overlay
+          const Positioned(
             top: 0,
             left: 0,
             right: 0,
-            child: _buildTopHeaderOverlay(feedState, feedNotifier),
+            child: FeedTopBar(),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTopHeaderOverlay(TiktokFeedState feedState, TiktokFeedNotifier feedNotifier) {
-    return Container(
-      padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 8,
-        left: 16,
-        right: 16,
-        bottom: 8,
-      ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.black.withValues(alpha: 0.8),
-            Colors.black.withValues(alpha: 0.3),
-            Colors.transparent,
-          ],
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Row 1: Streak + Daily Goal Progress
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Streak Badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.accentGold.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(color: AppColors.accentGold.withValues(alpha: 0.4)),
-                ),
-                child: Row(
-                  children: [
-                    const Text('🔥', style: TextStyle(fontSize: 14)),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${feedState.streakDays} أيام مستمرة',
-                      style: const TextStyle(
-                        color: AppColors.accentGold,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Daily Mastered Badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.4)),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.stars_rounded, size: 14, color: AppColors.primary),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${feedState.masteredTodayCount} بطاقة أتقنتها',
-                      style: const TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 8),
-
-          // Row 2: Subject Selector Chips
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildSubjectTab(
-                label: '🎲 عشوائي (الكل)',
-                keyName: 'all',
-                isSelected: feedState.selectedSubject == 'all',
-                onTap: () => feedNotifier.setSubjectFilter('all'),
-              ),
-              const SizedBox(width: 8),
-              _buildSubjectTab(
-                label: '📜 التاريخ',
-                keyName: 'history',
-                isSelected: feedState.selectedSubject == 'history',
-                onTap: () => feedNotifier.setSubjectFilter('history'),
-              ),
-              const SizedBox(width: 8),
-              _buildSubjectTab(
-                label: '🌍 الجغرافيا',
-                keyName: 'geography',
-                isSelected: feedState.selectedSubject == 'geography',
-                onTap: () => feedNotifier.setSubjectFilter('geography'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSubjectTab({
-    required String label,
-    required String keyName,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surface.withValues(alpha: 0.7),
-          borderRadius: BorderRadius.circular(999),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.cardBorder,
-          ),
-          boxShadow: [
-            if (isSelected)
-              BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.3),
-                blurRadius: 8,
-              ),
-          ],
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : AppColors.textSecondary,
-            fontSize: 11,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-          ),
-        ),
       ),
     );
   }
