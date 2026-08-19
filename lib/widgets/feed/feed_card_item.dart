@@ -187,36 +187,35 @@ class _FeedCardItemState extends State<FeedCardItem> {
     final subject = widget.card.subjectName ?? 'التاريخ والجغرافيا';
     final lesson = widget.card.lessonTitle ?? 'بروز الصراع وتشكل العالم';
 
-    return Row(
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
-          decoration: BoxDecoration(
-            color: AppColors.surface.withValues(alpha: 0.9),
-            borderRadius: BorderRadius.circular(6.r),
-            border: Border.all(color: AppColors.cardBorder),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.school_rounded, size: 11.sp, color: AppColors.primary),
-              SizedBox(width: 5.w),
-              Flexible(
-                child: Text(
-                  '$subject > $lesson',
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 9.5.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+        decoration: BoxDecoration(
+          color: AppColors.surface.withValues(alpha: 0.9),
+          borderRadius: BorderRadius.circular(6.r),
+          border: Border.all(color: AppColors.cardBorder),
         ),
-      ],
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.school_rounded, size: 11.sp, color: AppColors.primary),
+            SizedBox(width: 5.w),
+            Flexible(
+              child: Text(
+                '$subject > $lesson',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 9.5.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
