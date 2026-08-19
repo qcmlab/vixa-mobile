@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import '../../core/constants.dart';
 import '../../providers/tiktok_feed_provider.dart';
 
@@ -15,10 +16,10 @@ class FeedTopBar extends ConsumerWidget {
 
     return Container(
       padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 6,
-        left: 14,
-        right: 14,
-        bottom: 6,
+        top: MediaQuery.of(context).padding.top + 4.h,
+        left: 12.w,
+        right: 12.w,
+        bottom: 4.h,
       ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -39,22 +40,22 @@ class FeedTopBar extends ConsumerWidget {
             children: [
               // Streak Badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                 decoration: BoxDecoration(
                   color: AppColors.accentGold.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(999.r),
                   border: Border.all(color: AppColors.accentGold.withValues(alpha: 0.35)),
                 ),
                 child: Row(
                   children: [
-                    const Text('🔥', style: TextStyle(fontSize: 13)),
-                    const SizedBox(width: 4),
+                    Text('🔥', style: TextStyle(fontSize: 12.sp)),
+                    SizedBox(width: 4.w),
                     Text(
                       '$streakDays أيام مستمرة',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.accentGold,
                         fontWeight: FontWeight.bold,
-                        fontSize: 11,
+                        fontSize: 10.sp,
                       ),
                     ),
                   ],
@@ -63,22 +64,22 @@ class FeedTopBar extends ConsumerWidget {
 
               // Daily Mastered Badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(999.r),
                   border: Border.all(color: AppColors.primary.withValues(alpha: 0.35)),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.stars_rounded, size: 14, color: AppColors.primary),
-                    const SizedBox(width: 4),
+                    Icon(Icons.stars_rounded, size: 13.sp, color: AppColors.primary),
+                    SizedBox(width: 4.w),
                     Text(
                       '$masteredTodayCount بطاقة أتقنتها',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
-                        fontSize: 11,
+                        fontSize: 10.sp,
                       ),
                     ),
                   ],
@@ -87,7 +88,7 @@ class FeedTopBar extends ConsumerWidget {
             ],
           ),
 
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
 
           // Row 2: Subject Selector Chips
           Row(
@@ -99,14 +100,14 @@ class FeedTopBar extends ConsumerWidget {
                 isSelected: selectedSubject == 'all',
                 onTap: () => feedNotifier.setSubjectFilter('all'),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 6.w),
               _buildSubjectTab(
                 label: '📜 التاريخ',
                 keyName: 'history',
                 isSelected: selectedSubject == 'history',
                 onTap: () => feedNotifier.setSubjectFilter('history'),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 6.w),
               _buildSubjectTab(
                 label: '🌍 الجغرافيا',
                 keyName: 'geography',
@@ -130,10 +131,10 @@ class FeedTopBar extends ConsumerWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : AppColors.surface.withValues(alpha: 0.8),
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(999.r),
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.cardBorder,
           ),
@@ -142,7 +143,7 @@ class FeedTopBar extends ConsumerWidget {
           label,
           style: TextStyle(
             color: isSelected ? Colors.white : AppColors.textSecondary,
-            fontSize: 11,
+            fontSize: 10.sp,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
           ),
         ),

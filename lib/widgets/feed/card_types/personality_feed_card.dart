@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import '../../../core/constants.dart';
 import '../../../models/flashcard.dart';
 import '../memorization_feedback_bar.dart';
@@ -20,27 +21,27 @@ class _PersonalityFeedCardState extends State<PersonalityFeedCard> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: double.infinity,
-              constraints: const BoxConstraints(minHeight: 320),
-              padding: const EdgeInsets.all(22),
+              constraints: BoxConstraints(minHeight: 280.h),
+              padding: EdgeInsets.all(18.w),
               decoration: BoxDecoration(
                 color: AppColors.surface,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(22.r),
                 border: Border.all(
                   color: AppColors.accentPurple.withValues(alpha: 0.35),
-                  width: 1.2,
+                  width: 1.2.w,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.25),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                    blurRadius: 10.r,
+                    offset: Offset(0, 4.h),
                   ),
                 ],
               ),
@@ -52,28 +53,28 @@ class _PersonalityFeedCardState extends State<PersonalityFeedCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                         decoration: BoxDecoration(
                           color: AppColors.accentPurple.withValues(alpha: 0.18),
-                          borderRadius: BorderRadius.circular(999),
+                          borderRadius: BorderRadius.circular(999.r),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.person_pin_rounded, size: 13, color: AppColors.accentPurple),
-                            SizedBox(width: 5),
+                            Icon(Icons.person_pin_rounded, size: 12.sp, color: AppColors.accentPurple),
+                            SizedBox(width: 4.w),
                             Text(
                               'شخصية تاريخية بارزة',
                               style: TextStyle(
                                 color: AppColors.accentPurple,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 11,
+                                fontSize: 10.sp,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const Icon(Icons.stars_rounded, size: 18, color: AppColors.accentPurple),
+                      Icon(Icons.stars_rounded, size: 16.sp, color: AppColors.accentPurple),
                     ],
                   ),
 
@@ -81,31 +82,31 @@ class _PersonalityFeedCardState extends State<PersonalityFeedCard> {
                   Column(
                     children: [
                       Container(
-                        width: 58,
-                        height: 58,
+                        width: 52.w,
+                        height: 52.w,
                         decoration: BoxDecoration(
                           color: AppColors.surfaceLight,
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: AppColors.accentPurple.withValues(alpha: 0.5),
-                            width: 1.5,
+                            width: 1.5.w,
                           ),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.person_rounded,
-                          size: 32,
+                          size: 28.sp,
                           color: AppColors.accentPurple,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 10.h),
                       Text(
                         widget.card.question,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.textPrimary,
-                          fontSize: 16,
+                          fontSize: 15.sp,
                           fontWeight: FontWeight.bold,
-                          height: 1.4,
+                          height: 1.35,
                         ),
                       ),
                     ],
@@ -116,25 +117,25 @@ class _PersonalityFeedCardState extends State<PersonalityFeedCard> {
                     GestureDetector(
                       onTap: () => setState(() => _isAnswerRevealed = true),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
                             colors: [AppColors.accentPurple, Color(0xFF6D28D9)],
                           ),
-                          borderRadius: BorderRadius.circular(999),
+                          borderRadius: BorderRadius.circular(999.r),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.badge_rounded, size: 15, color: Colors.white),
-                            SizedBox(width: 6),
+                            Icon(Icons.badge_rounded, size: 14.sp, color: Colors.white),
+                            SizedBox(width: 5.w),
                             Flexible(
                               child: Text(
                                 'كشف بطاقة الشخصية',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 12,
+                                  fontSize: 11.sp,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -146,10 +147,10 @@ class _PersonalityFeedCardState extends State<PersonalityFeedCard> {
                     )
                   else
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: EdgeInsets.all(10.w),
                       decoration: BoxDecoration(
                         color: AppColors.surfaceLight,
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(14.r),
                         border: Border.all(
                           color: AppColors.accentPurple.withValues(alpha: 0.35),
                         ),
@@ -159,20 +160,20 @@ class _PersonalityFeedCardState extends State<PersonalityFeedCard> {
                           Text(
                             widget.card.answer,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.textPrimary,
-                              fontSize: 13,
+                              fontSize: 12.5.sp,
                               fontWeight: FontWeight.w600,
-                              height: 1.4,
+                              height: 1.35,
                             ),
                           ),
                           if (widget.card.hint != null) ...[
-                            const SizedBox(height: 6),
+                            SizedBox(height: 4.h),
                             Text(
                               '🔑 ${widget.card.hint}',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.accentPurple,
-                                fontSize: 10,
+                                fontSize: 9.5.sp,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

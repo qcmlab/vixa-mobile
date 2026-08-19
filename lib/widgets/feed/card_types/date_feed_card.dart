@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import '../../../core/constants.dart';
 import '../../../models/flashcard.dart';
 import '../memorization_feedback_bar.dart';
@@ -20,27 +21,27 @@ class _DateFeedCardState extends State<DateFeedCard> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: double.infinity,
-              constraints: const BoxConstraints(minHeight: 320),
-              padding: const EdgeInsets.all(22),
+              constraints: BoxConstraints(minHeight: 280.h),
+              padding: EdgeInsets.all(18.w),
               decoration: BoxDecoration(
                 color: AppColors.surface,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(22.r),
                 border: Border.all(
                   color: AppColors.accentGold.withValues(alpha: 0.35),
-                  width: 1.2,
+                  width: 1.2.w,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.25),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                    blurRadius: 10.r,
+                    offset: Offset(0, 4.h),
                   ),
                 ],
               ),
@@ -52,28 +53,28 @@ class _DateFeedCardState extends State<DateFeedCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                         decoration: BoxDecoration(
                           color: AppColors.accentGold.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(999),
+                          borderRadius: BorderRadius.circular(999.r),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.event_note_rounded, size: 13, color: AppColors.accentGold),
-                            SizedBox(width: 5),
+                            Icon(Icons.event_note_rounded, size: 12.sp, color: AppColors.accentGold),
+                            SizedBox(width: 4.w),
                             Text(
                               'محطة وتاريخ مصيري',
                               style: TextStyle(
                                 color: AppColors.accentGold,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 11,
+                                fontSize: 10.sp,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const Icon(Icons.history_edu_rounded, size: 18, color: AppColors.accentGold),
+                      Icon(Icons.history_edu_rounded, size: 16.sp, color: AppColors.accentGold),
                     ],
                   ),
 
@@ -81,25 +82,25 @@ class _DateFeedCardState extends State<DateFeedCard> {
                   Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                         decoration: BoxDecoration(
                           color: AppColors.surfaceLight,
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius: BorderRadius.circular(16.r),
                           border: Border.all(
                             color: AppColors.accentGold.withValues(alpha: 0.4),
-                            width: 1.2,
+                            width: 1.2.w,
                           ),
                         ),
                         child: Column(
                           children: [
-                            const Icon(Icons.calendar_month_rounded, size: 26, color: AppColors.accentGold),
-                            const SizedBox(height: 4),
+                            Icon(Icons.calendar_month_rounded, size: 24.sp, color: AppColors.accentGold),
+                            SizedBox(height: 4.h),
                             Text(
                               widget.card.answer,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.accentGold,
-                                fontSize: 20,
+                                fontSize: 19.sp,
                                 fontWeight: FontWeight.w900,
                                 letterSpacing: 0.5,
                               ),
@@ -107,15 +108,15 @@ class _DateFeedCardState extends State<DateFeedCard> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 14),
+                      SizedBox(height: 12.h),
                       Text(
                         widget.card.question,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.textPrimary,
-                          fontSize: 16,
+                          fontSize: 15.sp,
                           fontWeight: FontWeight.bold,
-                          height: 1.4,
+                          height: 1.35,
                         ),
                       ),
                     ],
@@ -126,23 +127,23 @@ class _DateFeedCardState extends State<DateFeedCard> {
                     GestureDetector(
                       onTap: () => setState(() => _isRevealed = true),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
                         decoration: BoxDecoration(
                           color: AppColors.accentGold,
-                          borderRadius: BorderRadius.circular(999),
+                          borderRadius: BorderRadius.circular(999.r),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.visibility_rounded, size: 15, color: Colors.black),
-                            SizedBox(width: 6),
+                            Icon(Icons.visibility_rounded, size: 14.sp, color: Colors.black),
+                            SizedBox(width: 5.w),
                             Flexible(
                               child: Text(
                                 'كشف الأهمية التاريخية',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 12,
+                                  fontSize: 11.sp,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -154,10 +155,10 @@ class _DateFeedCardState extends State<DateFeedCard> {
                     )
                   else
                     Container(
-                      padding: const EdgeInsets.all(10),
+                      padding: EdgeInsets.all(8.w),
                       decoration: BoxDecoration(
                         color: AppColors.surfaceLight,
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(color: AppColors.cardBorder),
                       ),
                       child: Column(
@@ -166,19 +167,19 @@ class _DateFeedCardState extends State<DateFeedCard> {
                             Text(
                               widget.card.explanation!,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.textSecondary,
-                                fontSize: 11,
+                                fontSize: 10.sp,
                                 height: 1.3,
                               ),
                             ),
                           if (widget.card.hint != null) ...[
-                            const SizedBox(height: 4),
+                            SizedBox(height: 4.h),
                             Text(
                               '🧠 ${widget.card.hint!}',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.accentGold,
-                                fontSize: 10,
+                                fontSize: 9.5.sp,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

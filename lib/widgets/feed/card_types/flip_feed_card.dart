@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import '../../../core/constants.dart';
 import '../../../models/flashcard.dart';
 import '../memorization_feedback_bar.dart';
@@ -22,7 +23,7 @@ class FlipFeedCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -55,7 +56,6 @@ class FlipFeedCard extends StatelessWidget {
               ),
             ),
 
-            // Feedback Bar when flipped to the answer
             if (isFlipped && onFeedback != null)
               MemorizationFeedbackBar(onFeedback: onFeedback!),
           ],
@@ -68,17 +68,17 @@ class FlipFeedCard extends StatelessWidget {
     return Container(
       key: key,
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 320),
-      padding: const EdgeInsets.all(22),
+      constraints: BoxConstraints(minHeight: 280.h),
+      padding: EdgeInsets.all(18.w),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.cardBorder, width: 1.2),
+        borderRadius: BorderRadius.circular(22.r),
+        border: Border.all(color: AppColors.cardBorder, width: 1.2.w),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.25),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            blurRadius: 10.r,
+            offset: Offset(0, 4.h),
           ),
         ],
       ),
@@ -90,32 +90,32 @@ class FlipFeedCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                 decoration: BoxDecoration(
                   color: AppColors.accentBlue.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(999.r),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.style_rounded, size: 13, color: AppColors.accentBlue),
-                    SizedBox(width: 5),
+                    Icon(Icons.style_rounded, size: 12.sp, color: AppColors.accentBlue),
+                    SizedBox(width: 4.w),
                     Text(
                       'بطاقة استذكار ذكية',
                       style: TextStyle(
                         color: AppColors.accentBlue,
                         fontWeight: FontWeight.bold,
-                        fontSize: 11,
+                        fontSize: 10.sp,
                       ),
                     ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                 decoration: BoxDecoration(
                   color: Colors.black26,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(6.r),
                 ),
                 child: Text(
                   card.difficulty == 'easy'
@@ -123,7 +123,7 @@ class FlipFeedCard extends StatelessWidget {
                       : card.difficulty == 'hard'
                           ? '🔴 متقدم'
                           : '🟡 متوسط',
-                  style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+                  style: TextStyle(fontSize: 9.sp, color: AppColors.textMuted),
                 ),
               ),
             ],
@@ -131,37 +131,37 @@ class FlipFeedCard extends StatelessWidget {
 
           // Question Body
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            padding: EdgeInsets.symmetric(vertical: 20.h),
             child: Text(
               card.question,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.textPrimary,
-                fontSize: 19,
+                fontSize: 17.sp,
                 fontWeight: FontWeight.bold,
-                height: 1.5,
+                height: 1.4,
               ),
             ),
           ),
 
           // Tap Hint
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
             decoration: BoxDecoration(
               color: AppColors.surfaceLight.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(999),
+              borderRadius: BorderRadius.circular(999.r),
               border: Border.all(color: AppColors.cardBorder),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.touch_app_rounded, size: 15, color: AppColors.accentBlue),
-                SizedBox(width: 6),
+                Icon(Icons.touch_app_rounded, size: 13.sp, color: AppColors.accentBlue),
+                SizedBox(width: 5.w),
                 Text(
                   'المس لقلب البطاقة وكشف الإجابة',
                   style: TextStyle(
                     color: AppColors.textSecondary,
-                    fontSize: 11,
+                    fontSize: 10.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -177,20 +177,20 @@ class FlipFeedCard extends StatelessWidget {
     return Container(
       key: key,
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 320),
-      padding: const EdgeInsets.all(22),
+      constraints: BoxConstraints(minHeight: 280.h),
+      padding: EdgeInsets.all(18.w),
       decoration: BoxDecoration(
         color: AppColors.surfaceLight,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(22.r),
         border: Border.all(
           color: AppColors.primary.withValues(alpha: 0.5),
-          width: 1.5,
+          width: 1.5.w,
         ),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withValues(alpha: 0.12),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            blurRadius: 12.r,
+            offset: Offset(0, 4.h),
           ),
         ],
       ),
@@ -202,66 +202,66 @@ class FlipFeedCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                 decoration: BoxDecoration(
                   color: AppColors.primaryDark.withValues(alpha: 0.25),
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(999.r),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.check_circle_rounded, size: 13, color: AppColors.primary),
-                    SizedBox(width: 5),
+                    Icon(Icons.check_circle_rounded, size: 12.sp, color: AppColors.primary),
+                    SizedBox(width: 4.w),
                     Text(
                       'الإجابة النموذجية للبكالوريا',
                       style: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
-                        fontSize: 11,
+                        fontSize: 10.sp,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.verified_rounded, size: 16, color: AppColors.primary),
+              Icon(Icons.verified_rounded, size: 15.sp, color: AppColors.primary),
             ],
           ),
 
           // Answer Content
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            padding: EdgeInsets.symmetric(vertical: 12.h),
             child: Column(
               children: [
                 Text(
                   card.answer,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 16,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
-                    height: 1.5,
+                    height: 1.4,
                   ),
                 ),
                 if (card.explanation != null && card.explanation!.isNotEmpty) ...[
-                  const SizedBox(height: 12),
+                  SizedBox(height: 10.h),
                   Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: EdgeInsets.all(8.w),
                     decoration: BoxDecoration(
                       color: AppColors.background.withValues(alpha: 0.6),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(10.r),
                       border: Border.all(color: AppColors.cardBorder),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('💡', style: TextStyle(fontSize: 13)),
-                        const SizedBox(width: 6),
+                        Text('💡', style: TextStyle(fontSize: 12.sp)),
+                        SizedBox(width: 5.w),
                         Expanded(
                           child: Text(
                             card.explanation!,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.textSecondary,
-                              fontSize: 11,
+                              fontSize: 10.sp,
                               height: 1.3,
                             ),
                           ),
@@ -274,7 +274,7 @@ class FlipFeedCard extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 2),
+          SizedBox(height: 2.h),
         ],
       ),
     );

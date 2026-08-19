@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import '../../core/constants.dart';
 
 enum FeedbackLevel {
@@ -30,35 +31,28 @@ class _MemorizationFeedbackBarState extends State<MemorizationFeedbackBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 14),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.only(top: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
       decoration: BoxDecoration(
         color: AppColors.surface.withValues(alpha: 0.95),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
           color: AppColors.primary.withValues(alpha: 0.3),
-          width: 1.2,
+          width: 1.w,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
+          Text(
             'ما مدى استيعابك وتذكرك لهذه المعلومة؟ 🤔',
             style: TextStyle(
               color: AppColors.textSecondary,
-              fontSize: 11,
+              fontSize: 11.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 8.h),
           Row(
             children: [
               // 1. Not Yet (0%)
@@ -71,7 +65,7 @@ class _MemorizationFeedbackBarState extends State<MemorizationFeedbackBar> {
                   color: AppColors.ratingAgain,
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 6.w),
 
               // 2. Partially (50%)
               Expanded(
@@ -83,7 +77,7 @@ class _MemorizationFeedbackBarState extends State<MemorizationFeedbackBar> {
                   color: AppColors.accentGold,
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 6.w),
 
               // 3. Mastered (100%)
               Expanded(
@@ -114,25 +108,17 @@ class _MemorizationFeedbackBarState extends State<MemorizationFeedbackBar> {
     return GestureDetector(
       onTap: () => _selectLevel(level),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+        duration: const Duration(milliseconds: 200),
+        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 4.w),
         decoration: BoxDecoration(
           color: isSelected
               ? color.withValues(alpha: 0.25)
               : color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
             color: isSelected ? color : color.withValues(alpha: 0.35),
-            width: isSelected ? 2 : 1,
+            width: isSelected ? 1.5.w : 1.w,
           ),
-          boxShadow: [
-            if (isSelected)
-              BoxShadow(
-                color: color.withValues(alpha: 0.35),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-          ],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -140,26 +126,28 @@ class _MemorizationFeedbackBarState extends State<MemorizationFeedbackBar> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, size: 14, color: color),
-                const SizedBox(width: 4),
+                Icon(icon, size: 13.sp, color: color),
+                SizedBox(width: 3.w),
                 Text(
                   percent,
                   style: TextStyle(
                     color: color,
                     fontWeight: FontWeight.w900,
-                    fontSize: 11,
+                    fontSize: 10.sp,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 3),
+            SizedBox(height: 2.h),
             Text(
               label,
               style: TextStyle(
                 color: isSelected ? Colors.white : AppColors.textPrimary,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                fontSize: 11,
+                fontSize: 10.sp,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

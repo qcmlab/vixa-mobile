@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import '../../../core/constants.dart';
 import '../../../models/flashcard.dart';
 import '../memorization_feedback_bar.dart';
@@ -13,27 +14,27 @@ class AdviceFeedCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: double.infinity,
-              constraints: const BoxConstraints(minHeight: 320),
-              padding: const EdgeInsets.all(22),
+              constraints: BoxConstraints(minHeight: 280.h),
+              padding: EdgeInsets.all(18.w),
               decoration: BoxDecoration(
                 color: AppColors.surface,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(22.r),
                 border: Border.all(
                   color: AppColors.accentRose.withValues(alpha: 0.35),
-                  width: 1.2,
+                  width: 1.2.w,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.25),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                    blurRadius: 10.r,
+                    offset: Offset(0, 4.h),
                   ),
                 ],
               ),
@@ -45,28 +46,28 @@ class AdviceFeedCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                         decoration: BoxDecoration(
                           color: AppColors.accentRose.withValues(alpha: 0.18),
-                          borderRadius: BorderRadius.circular(999),
+                          borderRadius: BorderRadius.circular(999.r),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.psychology_rounded, size: 13, color: AppColors.accentRose),
-                            SizedBox(width: 5),
+                            Icon(Icons.psychology_rounded, size: 12.sp, color: AppColors.accentRose),
+                            SizedBox(width: 4.w),
                             Text(
                               'كبسولة الذاكرة الفائقة',
                               style: TextStyle(
                                 color: AppColors.accentRose,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 11,
+                                fontSize: 10.sp,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const Icon(Icons.bolt_rounded, size: 20, color: AppColors.accentRose),
+                      Icon(Icons.bolt_rounded, size: 18.sp, color: AppColors.accentRose),
                     ],
                   ),
 
@@ -74,55 +75,55 @@ class AdviceFeedCard extends StatelessWidget {
                   Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: EdgeInsets.all(10.w),
                         decoration: BoxDecoration(
                           color: AppColors.surfaceLight,
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: AppColors.accentRose.withValues(alpha: 0.4),
-                            width: 1.2,
+                            width: 1.2.w,
                           ),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.lightbulb_rounded,
-                          size: 28,
+                          size: 26.sp,
                           color: AppColors.accentRose,
                         ),
                       ),
-                      const SizedBox(height: 14),
+                      SizedBox(height: 12.h),
                       Text(
                         card.question,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.textPrimary,
-                          fontSize: 15,
+                          fontSize: 14.5.sp,
                           fontWeight: FontWeight.bold,
-                          height: 1.4,
+                          height: 1.35,
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 8.h),
                       Container(
-                        padding: const EdgeInsets.all(10),
+                        padding: EdgeInsets.all(8.w),
                         decoration: BoxDecoration(
                           color: AppColors.background.withValues(alpha: 0.7),
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(12.r),
                           border: Border.all(color: AppColors.cardBorder),
                         ),
                         child: Text(
                           card.answer,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Color(0xFFFECDD3),
-                            fontSize: 12,
+                          style: TextStyle(
+                            color: const Color(0xFFFECDD3),
+                            fontSize: 11.5.sp,
                             fontWeight: FontWeight.w600,
-                            height: 1.5,
+                            height: 1.4,
                           ),
                         ),
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                 ],
               ),
             ),

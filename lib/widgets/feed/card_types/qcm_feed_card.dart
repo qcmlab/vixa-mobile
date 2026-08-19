@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import '../../../core/constants.dart';
 import '../../../models/flashcard.dart';
 import '../memorization_feedback_bar.dart';
@@ -36,7 +37,7 @@ class _QcmFeedCardState extends State<QcmFeedCard> {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       child: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -45,19 +46,19 @@ class _QcmFeedCardState extends State<QcmFeedCard> {
           children: [
             // 1. Question Card Container
             Container(
-              padding: const EdgeInsets.all(18),
+              padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
                 color: AppColors.surface,
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(
                   color: AppColors.primary.withValues(alpha: 0.25),
-                  width: 1.2,
+                  width: 1.2.w,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.25),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                    blurRadius: 10.r,
+                    offset: Offset(0, 4.h),
                   ),
                 ],
               ),
@@ -68,22 +69,22 @@ class _QcmFeedCardState extends State<QcmFeedCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(999),
+                          borderRadius: BorderRadius.circular(999.r),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.quiz_rounded, size: 13, color: AppColors.primary),
-                            SizedBox(width: 5),
+                            Icon(Icons.quiz_rounded, size: 12.sp, color: AppColors.primary),
+                            SizedBox(width: 4.w),
                             Text(
                               'سؤال تفاعلي (QCM)',
                               style: TextStyle(
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 11,
+                                fontSize: 10.sp,
                               ),
                             ),
                           ],
@@ -93,35 +94,35 @@ class _QcmFeedCardState extends State<QcmFeedCard> {
                         Tooltip(
                           message: widget.card.hint!,
                           child: Container(
-                            padding: const EdgeInsets.all(5),
+                            padding: EdgeInsets.all(4.w),
                             decoration: BoxDecoration(
                               color: AppColors.accentGold.withValues(alpha: 0.15),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.lightbulb_rounded,
-                              size: 13,
+                              size: 12.sp,
                               color: AppColors.accentGold,
                             ),
                           ),
                         ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 8.h),
                   Text(
                     widget.card.question,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textPrimary,
-                      fontSize: 16,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.bold,
-                      height: 1.4,
+                      height: 1.35,
                     ),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 10),
+            SizedBox(height: 8.h),
 
             // 2. Interactive Options List
             ...List.generate(options.length, (index) {
@@ -151,7 +152,7 @@ class _QcmFeedCardState extends State<QcmFeedCard> {
               }
 
               return Padding(
-                padding: const EdgeInsets.only(bottom: 6),
+                padding: EdgeInsets.only(bottom: 5.h),
                 child: GestureDetector(
                   onTap: _hasAnswered
                       ? null
@@ -165,17 +166,17 @@ class _QcmFeedCardState extends State<QcmFeedCard> {
                           }
                         },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
                     decoration: BoxDecoration(
                       color: bgColor,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: borderColor, width: isSelected || (_hasAnswered && isCorrect) ? 1.5 : 1),
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(color: borderColor, width: isSelected || (_hasAnswered && isCorrect) ? 1.5.w : 1.w),
                     ),
                     child: Row(
                       children: [
                         Container(
-                          width: 24,
-                          height: 24,
+                          width: 22.w,
+                          height: 22.w,
                           decoration: BoxDecoration(
                             color: _hasAnswered && isCorrect
                                 ? AppColors.primary
@@ -187,21 +188,21 @@ class _QcmFeedCardState extends State<QcmFeedCard> {
                           child: Center(
                             child: Text(
                               prefix,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 11,
+                                fontSize: 10.sp,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 7.w),
                         Expanded(
                           child: Text(
                             optionText,
                             style: TextStyle(
                               color: textColor,
-                              fontSize: 12,
+                              fontSize: 11.5.sp,
                               fontWeight: isSelected || (_hasAnswered && isCorrect) ? FontWeight.bold : FontWeight.w500,
                               height: 1.2,
                             ),
@@ -211,7 +212,7 @@ class _QcmFeedCardState extends State<QcmFeedCard> {
                           Icon(
                             trailingIcon,
                             color: isCorrect ? AppColors.primary : AppColors.ratingAgain,
-                            size: 16,
+                            size: 15.sp,
                           ),
                       ],
                     ),
@@ -223,39 +224,39 @@ class _QcmFeedCardState extends State<QcmFeedCard> {
             // 3. Explanation upon answering
             if (_hasAnswered && widget.card.explanation != null && widget.card.explanation!.isNotEmpty)
               Container(
-                margin: const EdgeInsets.only(top: 4),
-                padding: const EdgeInsets.all(10),
+                margin: EdgeInsets.only(top: 4.h),
+                padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceLight,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(
                     color: AppColors.primary.withValues(alpha: 0.35),
-                    width: 1,
+                    width: 1.w,
                   ),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('💡', style: TextStyle(fontSize: 13)),
-                    const SizedBox(width: 6),
+                    Text('💡', style: TextStyle(fontSize: 12.sp)),
+                    SizedBox(width: 5.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'التفسير البيداغوجي:',
                             style: TextStyle(
                               color: AppColors.primary,
                               fontWeight: FontWeight.bold,
-                              fontSize: 11,
+                              fontSize: 10.sp,
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          SizedBox(height: 2.h),
                           Text(
                             widget.card.explanation!,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.textSecondary,
-                              fontSize: 11,
+                              fontSize: 10.sp,
                               height: 1.3,
                             ),
                           ),

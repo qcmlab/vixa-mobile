@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/constants.dart';
@@ -29,28 +30,35 @@ class HafedhApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppConstants.appName,
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: AppColors.background,
-        primaryColor: AppColors.primary,
-        textTheme: GoogleFonts.tajawalTextTheme(
-          ThemeData(brightness: Brightness.dark).textTheme,
-        ),
-        colorScheme: const ColorScheme.dark(
-          primary: AppColors.primary,
-          surface: AppColors.surface,
-        ),
-      ),
+    return ScreenUtilPlusInit(
+      designSize: const Size(390, 844),
+      minTextAdapt: true,
+      splitScreenMode: true,
       builder: (context, child) {
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: child ?? const SizedBox(),
+        return MaterialApp(
+          title: AppConstants.appName,
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            brightness: Brightness.dark,
+            scaffoldBackgroundColor: AppColors.background,
+            primaryColor: AppColors.primary,
+            textTheme: GoogleFonts.tajawalTextTheme(
+              ThemeData(brightness: Brightness.dark).textTheme,
+            ),
+            colorScheme: const ColorScheme.dark(
+              primary: AppColors.primary,
+              surface: AppColors.surface,
+            ),
+          ),
+          builder: (context, childWidget) {
+            return Directionality(
+              textDirection: TextDirection.rtl,
+              child: childWidget ?? const SizedBox(),
+            );
+          },
+          home: const AuthGate(),
         );
       },
-      home: const AuthGate(),
     );
   }
 }

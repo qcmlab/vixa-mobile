@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import '../../core/constants.dart';
 import '../../models/flashcard.dart';
 import 'card_types/advice_feed_card.dart';
@@ -48,7 +49,7 @@ class _FeedCardItemState extends State<FeedCardItem> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // 1. Background subtle ambient glow
+        // 1. Background
         Positioned.fill(
           child: Container(
             color: AppColors.background,
@@ -59,11 +60,11 @@ class _FeedCardItemState extends State<FeedCardItem> {
         Positioned.fill(
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.only(
-                right: 56, // Space for side actions
-                left: 6,
-                top: 50,
-                bottom: 44,
+              padding: EdgeInsets.only(
+                right: 52.w, // Space for side actions
+                left: 6.w,
+                top: 48.h,
+                bottom: 40.h,
               ),
               child: _buildCardByType(),
             ),
@@ -72,8 +73,8 @@ class _FeedCardItemState extends State<FeedCardItem> {
 
         // 3. Side Actions Column (TikTok-style floating overlay)
         Positioned(
-          right: 6,
-          bottom: 60,
+          right: 6.w,
+          bottom: 50.h,
           child: FeedSideActions(
             card: widget.card,
             isFlipped: _isFlipped,
@@ -87,9 +88,9 @@ class _FeedCardItemState extends State<FeedCardItem> {
 
         // 4. Bottom Info Overlay (Subject, Lesson Breadcrumbs)
         Positioned(
-          left: 10,
-          right: 68,
-          bottom: 10,
+          left: 10.w,
+          right: 64.w,
+          bottom: 8.h,
           child: _buildBottomMetaOverlay(),
         ),
 
@@ -106,27 +107,27 @@ class _FeedCardItemState extends State<FeedCardItem> {
                     return Transform.scale(
                       scale: val,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
                         decoration: BoxDecoration(
                           color: AppColors.surface,
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(color: AppColors.primary, width: 2),
+                          borderRadius: BorderRadius.circular(20.r),
+                          border: Border.all(color: AppColors.primary, width: 2.w),
                           boxShadow: [
                             BoxShadow(
                               color: AppColors.primary.withValues(alpha: 0.4),
-                              blurRadius: 30,
+                              blurRadius: 20.r,
                             ),
                           ],
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('🎯 ', style: TextStyle(fontSize: 24)),
+                            Text('🎯 ', style: TextStyle(fontSize: 20.sp)),
                             Text(
                               'أتقنتَها! تم تثبيت البطاقة',
                               style: TextStyle(
                                 color: AppColors.primary,
-                                fontSize: 16,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -189,23 +190,23 @@ class _FeedCardItemState extends State<FeedCardItem> {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
           decoration: BoxDecoration(
             color: AppColors.surface.withValues(alpha: 0.9),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(6.r),
             border: Border.all(color: AppColors.cardBorder),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.school_rounded, size: 12, color: AppColors.primary),
-              const SizedBox(width: 6),
+              Icon(Icons.school_rounded, size: 11.sp, color: AppColors.primary),
+              SizedBox(width: 5.w),
               Flexible(
                 child: Text(
                   '$subject > $lesson',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textSecondary,
-                    fontSize: 10,
+                    fontSize: 9.5.sp,
                     fontWeight: FontWeight.w600,
                   ),
                   maxLines: 1,
