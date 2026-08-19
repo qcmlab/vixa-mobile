@@ -159,6 +159,18 @@ class TiktokFeedNotifier extends StateNotifier<TiktokFeedState> {
     }
   }
 
+  /// Sets any custom multimodal deck directly into the feed screen
+  void loadDeckCards(List<FlashcardModel> customCards) {
+    if (customCards.isEmpty) return;
+    final prioritized = _organizeDeckByPriority(customCards, state.cardFeedbackMap);
+    state = state.copyWith(
+      cards: prioritized,
+      isLoading: false,
+      currentIndex: 0,
+      selectedSubject: 'all',
+    );
+  }
+
   void setCurrentIndex(int index) {
     state = state.copyWith(currentIndex: index);
   }

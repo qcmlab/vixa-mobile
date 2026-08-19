@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import '../../core/constants.dart';
 import '../../models/flashcard.dart';
 import '../../models/subject.dart';
 import '../../providers/content_provider.dart';
+import '../../providers/tiktok_feed_provider.dart';
+import '../feed/tiktok_feed_screen.dart';
 
 class LessonDetailScreen extends ConsumerStatefulWidget {
   final LessonModel lesson;
@@ -39,6 +42,18 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
     }
   }
 
+  void _startTikTokStudyMode() {
+    if (_cards.isEmpty) return;
+    // Set this multimodal deck directly into the TikTok feed notifier
+    ref.read(tiktokFeedProvider.notifier).loadDeckCards(_cards);
+    
+    // Navigate to full-screen TikTok feed
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const TiktokFeedScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,9 +67,34 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
         ),
         title: Text(
           widget.lesson.name,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
         ),
       ),
+      bottomNavigationBar: _cards.isNotEmpty
+          ? Container(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                border: Border(top: BorderSide(color: AppColors.cardBorder, width: 1.w)),
+              ),
+              child: SafeArea(
+                child: ElevatedButton.icon(
+                  onPressed: _startTikTokStudyMode,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+                  ),
+                  icon: Icon(Icons.bolt_rounded, size: 20.sp, color: AppColors.accentGold),
+                  label: Text(
+                    '🚀 بدء المراجعة بأسلوب التيك توك (${_cards.length} بطاقات)',
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            )
+          : null,
       body: SafeArea(
         child: _isLoading
             ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
@@ -66,16 +106,16 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
                     ),
                   )
                 : ListView.separated(
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(16.w),
                     itemCount: _cards.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 14),
+                    separatorBuilder: (_, _) => SizedBox(height: 12.h),
                     itemBuilder: (context, index) {
                       final card = _cards[index];
                       return Container(
-                        padding: const EdgeInsets.all(18),
+                        padding: EdgeInsets.all(16.w),
                         decoration: BoxDecoration(
                           color: AppColors.surface,
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(16.r),
                           border: Border.all(color: AppColors.cardBorder),
                         ),
                         child: Column(
@@ -84,43 +124,55 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  'بطاقة #${index + 1} (${card.type})',
-                                  style: const TextStyle(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+                                  decoration: BoxDecoration(
+                                    color: _getModalityColor(card.type).withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                  child: Text(
+                                    '${_getModalityLabel(card.type)} #${index + 1}',
+                                    style: TextStyle(
+                                      color: _getModalityColor(card.type),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 11.sp,
+                                    ),
                                   ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                                   decoration: BoxDecoration(
                                     color: AppColors.surfaceLight,
-                                    borderRadius: BorderRadius.circular(999),
+                                    borderRadius: BorderRadius.circular(999.r),
                                   ),
                                   child: Text(
-                                    card.difficulty,
-                                    style: const TextStyle(color: AppColors.textMuted, fontSize: 10),
+                                    card.difficulty == 'easy'
+                                        ? '🟢 سهل'
+                                        : card.difficulty == 'hard'
+                                            ? '🔴 متقدم'
+                                            : '🟡 متوسط',
+                                    style: TextStyle(color: AppColors.textMuted, fontSize: 10.sp),
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: 10.h),
                             Text(
                               card.question,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.textPrimary,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 15,
+                                fontSize: 14.sp,
+                                height: 1.35,
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: 6.h),
                             Text(
                               card.answer,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.textSecondary,
-                                fontSize: 13,
-                                height: 1.4,
+                                fontSize: 12.5.sp,
+                                height: 1.35,
                               ),
                             ),
                           ],
@@ -130,5 +182,41 @@ class _LessonDetailScreenState extends ConsumerState<LessonDetailScreen> {
                   ),
       ),
     );
+  }
+
+  Color _getModalityColor(String type) {
+    switch (type) {
+      case 'qcm':
+        return AppColors.primary;
+      case 'date':
+        return AppColors.accentGold;
+      case 'person':
+        return AppColors.accentPurple;
+      case 'term':
+        return AppColors.accentTeal;
+      case 'advice':
+        return AppColors.accentRose;
+      case 'fact':
+      default:
+        return AppColors.accentBlue;
+    }
+  }
+
+  String _getModalityLabel(String type) {
+    switch (type) {
+      case 'qcm':
+        return 'سؤال تفاعلي QCM';
+      case 'date':
+        return 'تاريخ ومحطة';
+      case 'person':
+        return 'شخصية بارزة';
+      case 'term':
+        return 'مصطلح ومفهوم';
+      case 'advice':
+        return 'كبسولة الذاكرة';
+      case 'fact':
+      default:
+        return 'بطاقة ذكية';
+    }
   }
 }
