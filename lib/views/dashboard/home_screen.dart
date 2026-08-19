@@ -19,6 +19,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+
   @override
   void initState() {
     super.initState();
@@ -346,6 +347,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   color: AppColors.accentBlue,
                   onTap: () => widget.onTabChange?.call(2),
                 ),
+
               ],
             ),
           ),

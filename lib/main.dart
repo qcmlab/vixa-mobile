@@ -7,6 +7,7 @@ import 'core/constants.dart';
 import 'core/di/injection_container.dart';
 import 'core/storage.dart';
 import 'providers/auth_provider.dart';
+import 'providers/language_provider.dart';
 import 'views/auth/login_screen.dart';
 import 'views/main_navigation_screen.dart';
 
@@ -25,11 +26,13 @@ void main() async {
   );
 }
 
-class HafedhApp extends StatelessWidget {
+class HafedhApp extends ConsumerWidget {
   const HafedhApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final language = ref.watch(languageProvider);
+
     return ScreenUtilPlusInit(
       designSize: const Size(390, 844),
       minTextAdapt: true,
@@ -37,6 +40,7 @@ class HafedhApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           title: AppConstants.appName,
+          locale: language.locale,
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             brightness: Brightness.dark,
@@ -52,7 +56,7 @@ class HafedhApp extends StatelessWidget {
           ),
           builder: (context, childWidget) {
             return Directionality(
-              textDirection: TextDirection.rtl,
+              textDirection: language.textDirection,
               child: childWidget ?? const SizedBox(),
             );
           },

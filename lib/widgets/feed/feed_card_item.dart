@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import '../../core/constants.dart';
 import '../../models/flashcard.dart';
+import '../../providers/language_provider.dart';
 import 'card_types/advice_feed_card.dart';
 import 'card_types/date_feed_card.dart';
 import 'card_types/flip_feed_card.dart';
@@ -11,7 +13,7 @@ import 'card_types/term_feed_card.dart';
 import 'feed_side_actions.dart';
 import 'memorization_feedback_bar.dart';
 
-class FeedCardItem extends StatefulWidget {
+class FeedCardItem extends ConsumerStatefulWidget {
   final FlashcardModel card;
   final Function(FeedbackLevel level) onFeedback;
   final VoidCallback onToggleFavorite;
@@ -26,10 +28,10 @@ class FeedCardItem extends StatefulWidget {
   });
 
   @override
-  State<FeedCardItem> createState() => _FeedCardItemState();
+  ConsumerState<FeedCardItem> createState() => _FeedCardItemState();
 }
 
-class _FeedCardItemState extends State<FeedCardItem> {
+class _FeedCardItemState extends ConsumerState<FeedCardItem> {
   bool _isFlipped = false;
   bool _showCelebration = false;
 
@@ -104,6 +106,7 @@ class _FeedCardItemState extends State<FeedCardItem> {
                   tween: Tween(begin: 0.0, end: 1.0),
                   duration: const Duration(milliseconds: 400),
                   builder: (context, val, child) {
+                    final t = ref.watch(languageProvider).t;
                     return Transform.scale(
                       scale: val,
                       child: Container(
@@ -124,7 +127,7 @@ class _FeedCardItemState extends State<FeedCardItem> {
                           children: [
                             Text('🎯 ', style: TextStyle(fontSize: 20.sp)),
                             Text(
-                              'أتقنتَها! تم تثبيت البطاقة',
+                              t('feedback.celebration'),
                               style: TextStyle(
                                 color: AppColors.primary,
                                 fontSize: 14.sp,

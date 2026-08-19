@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants.dart';
+import '../../providers/language_provider.dart';
 import '../../providers/tiktok_feed_provider.dart';
 import '../../widgets/feed/feed_card_item.dart';
 import '../../widgets/feed/feed_top_bar.dart';
@@ -31,21 +32,22 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
   void _handleFeedbackAction(String cardId, FeedbackLevel level, int currentIndex) {
     final feedNotifier = ref.read(tiktokFeedProvider.notifier);
     feedNotifier.submitFeedback(cardId, level);
+    final t = ref.read(languageProvider).t;
 
     String message = '';
     Color bgColor = AppColors.primary;
 
     switch (level) {
       case FeedbackLevel.notYet:
-        message = '🔁 لم تحفظها بعد (0%) - تمت إضافتها للتكرار القريب!';
+        message = t('feedback.toast_not_yet');
         bgColor = AppColors.ratingAgain;
         break;
       case FeedbackLevel.partially:
-        message = '⚡ استيعاب جزئي (50%) - تمت جدولة التثبيت';
+        message = t('feedback.toast_partially');
         bgColor = AppColors.accentGold;
         break;
       case FeedbackLevel.mastered:
-        message = '🎉 ممتاز! تم إتقان البطاقة بنجاح (100%)';
+        message = t('feedback.toast_mastered');
         bgColor = AppColors.primary;
         break;
     }
@@ -96,6 +98,7 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
     final isLoading = ref.watch(tiktokFeedProvider.select((s) => s.isLoading));
     final cards = ref.watch(tiktokFeedProvider.select((s) => s.cards));
     final feedNotifier = ref.read(tiktokFeedProvider.notifier);
+    final t = ref.watch(languageProvider).t;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -107,7 +110,7 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
               child: CircularProgressIndicator(color: AppColors.primary),
             )
           else if (cards.isEmpty)
-            _buildEmptyFeed(feedNotifier)
+            _buildEmptyFeed(feedNotifier, t)
           else
             PageView.builder(
               controller: _pageController,
@@ -126,7 +129,7 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
                       feedNotifier.toggleFavorite(card.id);
                     },
                     onAudioPlay: () {
-                      _showAudioSnackbar('🔊 جاري قراءة نص البطاقة صوتياً...');
+                      _showAudioSnackbar(t('action.reading_audio'));
                     },
                   ),
                 );
@@ -145,7 +148,7 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
     );
   }
 
-  Widget _buildEmptyFeed(TiktokFeedNotifier notifier) {
+  Widget _buildEmptyFeed(TiktokFeedNotifier notifier, String Function(String) t) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -154,25 +157,25 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
           children: [
             const Icon(Icons.shuffle_rounded, size: 64, color: AppColors.textMuted),
             const SizedBox(height: 16),
-            const Text(
-              'لا توجد بطاقات في هذا التصنيف',
-              style: TextStyle(
+            Text(
+              t('feed.empty_title'),
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'اختر تصنيفاً آخر أو اضغط لتحديث التلقيم العشوائي.',
+            Text(
+              t('feed.empty_desc'),
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: () => notifier.loadFeed(forceRefresh: true),
               icon: const Icon(Icons.shuffle_rounded),
-              label: const Text('تلقيم عشوائي جديد'),
+              label: Text(t('feed.reload')),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,

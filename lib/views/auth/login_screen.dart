@@ -6,6 +6,9 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/custom_button.dart';
 import 'register_screen.dart';
 
+import '../../providers/language_provider.dart';
+import '../../widgets/language_selector_sheet.dart';
+
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -91,7 +94,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             onPressed: () => Navigator.pop(ctx),
             child: const Text('إلغاء', style: TextStyle(color: AppColors.textMuted)),
           ),
-            ElevatedButton(
+          ElevatedButton(
             onPressed: () async {
               final newUrl = controller.text.trim();
               if (newUrl.isNotEmpty) {
@@ -121,6 +124,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = ref.watch(authProvider);
+    final t = ref.watch(languageProvider).t;
+    final currentLang = ref.watch(languageProvider).languageCode.toUpperCase();
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -128,9 +133,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+          // Language Switcher Action Button
+          TextButton.icon(
+            onPressed: () => LanguageSelectorSheet.show(context),
+            icon: const Icon(Icons.language_rounded, size: 16, color: AppColors.primary),
+            label: Text(
+              currentLang,
+              style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.settings_ethernet_rounded, color: AppColors.textMuted),
-            tooltip: 'إعداد عنوان الخادم',
+            tooltip: t('auth.server_config'),
             onPressed: _showServerConfigDialog,
           ),
         ],
@@ -173,18 +187,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 18),
-                  const Text(
-                    'تطبيق حافظ | Hafedh',
-                    style: TextStyle(
+                  Text(
+                    t('auth.title'),
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
-                    'احفظ التاريخ والجغرافيا بذكاء وسهولة',
-                    style: TextStyle(
+                  Text(
+                    t('auth.tagline'),
+                    style: const TextStyle(
                       fontSize: 13,
                       color: AppColors.textSecondary,
                     ),
@@ -210,25 +224,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                         ],
                       ),
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.bolt_rounded, color: AppColors.accentGold, size: 24),
-                          SizedBox(width: 10),
+                          const Icon(Icons.bolt_rounded, color: AppColors.accentGold, size: 24),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '🚀 تجربة فورية مباشرة (Demo Mode)',
-                                  style: TextStyle(
+                                  t('auth.demo_mode'),
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
                                   ),
                                 ),
                                 Text(
-                                  'تصفح تلقيم التيك توك والبطاقات دون الحاجة للخادم',
-                                  style: TextStyle(
+                                  t('auth.demo_desc'),
+                                  style: const TextStyle(
                                     color: Color(0xFFA7F3D0),
                                     fontSize: 10,
                                   ),
@@ -236,7 +250,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ],
                             ),
                           ),
-                          Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Colors.white70),
+                          const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Colors.white70),
                         ],
                       ),
                     ),
@@ -247,9 +261,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Row(
                     children: [
                       Expanded(child: Container(height: 1, color: AppColors.cardBorder)),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Text('أو تسجيل الدخول بحسابك', style: TextStyle(color: AppColors.textMuted, fontSize: 11)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(t('auth.or_login'), style: const TextStyle(color: AppColors.textMuted, fontSize: 11)),
                       ),
                       Expanded(child: Container(height: 1, color: AppColors.cardBorder)),
                     ],
@@ -262,7 +276,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     keyboardType: TextInputType.emailAddress,
                     style: const TextStyle(color: AppColors.textPrimary),
                     decoration: InputDecoration(
-                      labelText: 'البريد الإلكتروني',
+                      labelText: t('auth.email'),
                       labelStyle: const TextStyle(color: AppColors.textSecondary),
                       prefixIcon: const Icon(Icons.email_outlined, color: AppColors.textMuted),
                       filled: true,
@@ -291,7 +305,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     obscureText: _obscurePassword,
                     style: const TextStyle(color: AppColors.textPrimary),
                     decoration: InputDecoration(
-                      labelText: 'كلمة المرور',
+                      labelText: t('auth.password'),
                       labelStyle: const TextStyle(color: AppColors.textSecondary),
                       prefixIcon: const Icon(Icons.lock_outline, color: AppColors.textMuted),
                       suffixIcon: IconButton(
@@ -324,7 +338,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                   // Submit Button
                   CustomButton(
-                    text: 'تسجيل الدخول',
+                    text: t('auth.login_btn'),
                     isLoading: auth.isLoading,
                     onPressed: _handleLogin,
                   ),
@@ -334,9 +348,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'ليس لديك حساب بعد؟ ',
-                        style: TextStyle(color: AppColors.textSecondary),
+                      Text(
+                        '${t('auth.no_account')} ',
+                        style: const TextStyle(color: AppColors.textSecondary),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -345,9 +359,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             MaterialPageRoute(builder: (_) => const RegisterScreen()),
                           );
                         },
-                        child: const Text(
-                          'أنشئ حساباً جديداً',
-                          style: TextStyle(
+                        child: Text(
+                          t('auth.register_btn'),
+                          style: const TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),

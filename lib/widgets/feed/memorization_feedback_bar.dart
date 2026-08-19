@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import '../../core/constants.dart';
+import '../../providers/language_provider.dart';
 
 enum FeedbackLevel {
-  notYet, // 0% - لم أحفظ بعد / نسيتها
-  partially, // 50% - نصف حفظ / تذكرت بصعوبة
-  mastered, // 100% - حفظتُها تماماً
+  notYet, // 0%
+  partially, // 50%
+  mastered, // 100%
 }
 
-class MemorizationFeedbackBar extends StatefulWidget {
+class MemorizationFeedbackBar extends ConsumerStatefulWidget {
   final Function(FeedbackLevel level) onFeedback;
 
   const MemorizationFeedbackBar({
@@ -17,10 +19,10 @@ class MemorizationFeedbackBar extends StatefulWidget {
   });
 
   @override
-  State<MemorizationFeedbackBar> createState() => _MemorizationFeedbackBarState();
+  ConsumerState<MemorizationFeedbackBar> createState() => _MemorizationFeedbackBarState();
 }
 
-class _MemorizationFeedbackBarState extends State<MemorizationFeedbackBar> {
+class _MemorizationFeedbackBarState extends ConsumerState<MemorizationFeedbackBar> {
   FeedbackLevel? _selectedLevel;
 
   void _selectLevel(FeedbackLevel level) {
@@ -30,6 +32,8 @@ class _MemorizationFeedbackBarState extends State<MemorizationFeedbackBar> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(languageProvider).t;
+
     return Container(
       margin: EdgeInsets.only(top: 10.h),
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
@@ -45,7 +49,7 @@ class _MemorizationFeedbackBarState extends State<MemorizationFeedbackBar> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'ما مدى استيعابك وتذكرك لهذه المعلومة؟ 🤔',
+            t('feedback.question'),
             style: TextStyle(
               color: AppColors.textSecondary,
               fontSize: 11.sp,
@@ -59,7 +63,7 @@ class _MemorizationFeedbackBarState extends State<MemorizationFeedbackBar> {
               Expanded(
                 child: _buildFeedbackButton(
                   level: FeedbackLevel.notYet,
-                  label: 'لم أحفظ',
+                  label: t('feedback.not_yet'),
                   percent: '0%',
                   icon: Icons.close_rounded,
                   color: AppColors.ratingAgain,
@@ -71,7 +75,7 @@ class _MemorizationFeedbackBarState extends State<MemorizationFeedbackBar> {
               Expanded(
                 child: _buildFeedbackButton(
                   level: FeedbackLevel.partially,
-                  label: 'نصف حفظ',
+                  label: t('feedback.partially'),
                   percent: '50%',
                   icon: Icons.bolt_rounded,
                   color: AppColors.accentGold,
@@ -83,7 +87,7 @@ class _MemorizationFeedbackBarState extends State<MemorizationFeedbackBar> {
               Expanded(
                 child: _buildFeedbackButton(
                   level: FeedbackLevel.mastered,
-                  label: 'أتقنتُها',
+                  label: t('feedback.mastered'),
                   percent: '100%',
                   icon: Icons.check_rounded,
                   color: AppColors.primary,

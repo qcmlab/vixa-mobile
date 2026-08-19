@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/dashboard_provider.dart';
+import '../../providers/language_provider.dart';
 import '../../services/lockscreen_service.dart';
+import '../../widgets/language_selector_sheet.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -55,15 +57,27 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     final user = ref.watch(authProvider).user;
     final data = ref.watch(dashboardProvider).data;
+    final t = ref.watch(languageProvider).t;
+    final currentLang = ref.watch(languageProvider).languageCode;
+
+    String langName = 'العربية (Arabic)';
+    String langFlag = '🇸🇦';
+    if (currentLang == 'fr') {
+      langName = 'Français (French)';
+      langFlag = '🇫🇷';
+    } else if (currentLang == 'en') {
+      langName = 'English (English)';
+      langFlag = '🇬🇧';
+    }
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text(
-          'الملف الشخصي والإعدادات',
-          style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+        title: Text(
+          t('settings.title'),
+          style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary),
         ),
       ),
       body: SafeArea(
@@ -135,8 +149,41 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
               const SizedBox(height: 24),
 
+              // Language & Localization Settings
+              _buildSectionHeader(t('settings.language')),
+              const SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColors.cardBorder),
+                ),
+                child: ListTile(
+                  onTap: () => LanguageSelectorSheet.show(context),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.language_rounded, color: AppColors.primary, size: 22),
+                  ),
+                  title: Text(
+                    t('settings.language'),
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary, fontSize: 14),
+                  ),
+                  subtitle: Text(
+                    '$langFlag $langName',
+                    style: const TextStyle(color: AppColors.primary, fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                  trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppColors.textMuted),
+                ),
+              ),
+              const SizedBox(height: 24),
+
               // Lock Screen Study Mode
-              _buildSectionHeader('مراجعة قفل الشاشة (Lock Screen Study) 📱'),
+              _buildSectionHeader(t('settings.lockscreen')),
               const SizedBox(height: 10),
               Container(
                 padding: const EdgeInsets.all(16),
@@ -155,13 +202,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       contentPadding: EdgeInsets.zero,
                       value: _isLockScreenEnabled,
                       activeThumbColor: AppColors.primary,
-                      title: const Text(
-                        'عرض بطاقة عند تشغيل الشاشة',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary, fontSize: 14),
+                      title: Text(
+                        t('settings.lockscreen'),
+                        style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary, fontSize: 14),
                       ),
-                      subtitle: const Text(
-                        'في كل مرة تفتح فيها هاتفك، تظهر لك بطاقة حفظ سريعة لحفظ المنهاج تلقائياً دون تضييع الوقت.',
-                        style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
+                      subtitle: Text(
+                        t('settings.lockscreen_desc'),
+                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 11),
                       ),
                       onChanged: _toggleLockScreen,
                     ),
@@ -195,7 +242,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   children: [
                     ListTile(
                       leading: const Icon(Icons.flag_rounded, color: AppColors.primary),
-                      title: const Text('الهدف اليومي للمراجعة', style: TextStyle(color: AppColors.textPrimary, fontSize: 14)),
+                      title: Text(t('settings.daily_goal'), style: const TextStyle(color: AppColors.textPrimary, fontSize: 14)),
                       trailing: Text(
                         '${data?.dailyGoal ?? 10} بطاقات/يوم',
                         style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 13),
@@ -204,57 +251,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     const Divider(color: AppColors.cardBorder, height: 1),
                     ListTile(
                       leading: const Icon(Icons.notifications_active_rounded, color: AppColors.accentGold),
-                      title: const Text('تذكير المراجعة المسائية', style: TextStyle(color: AppColors.textPrimary, fontSize: 14)),
+                      title: Text(t('settings.notifications'), style: const TextStyle(color: AppColors.textPrimary, fontSize: 14)),
                       trailing: Text(
                         user?.profile?.preferredNotificationTime ?? '18:00',
                         style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Subscription Box
-              _buildSectionHeader('حالة الاشتراك'),
-              const SizedBox(height: 10),
-              Container(
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.accentPurple.withValues(alpha: 0.15), AppColors.surface],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: AppColors.accentPurple.withValues(alpha: 0.3)),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          'خطة البكالوريا الشاملة 🚀',
-                          style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary, fontSize: 14),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          'تكرار متباعد ذكي ومراجعات غير محدودة',
-                          style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.accentPurple.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Text(
-                        'نشط',
-                        style: TextStyle(color: AppColors.accentPurple, fontWeight: FontWeight.bold, fontSize: 12),
                       ),
                     ),
                   ],
@@ -273,9 +273,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
                   icon: const Icon(Icons.logout_rounded, color: AppColors.accentRose, size: 18),
-                  label: const Text(
-                    'تسجيل الخروج من الحساب',
-                    style: TextStyle(color: AppColors.accentRose, fontWeight: FontWeight.bold),
+                  label: Text(
+                    t('settings.logout'),
+                    style: const TextStyle(color: AppColors.accentRose, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

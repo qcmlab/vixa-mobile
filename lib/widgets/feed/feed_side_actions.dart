@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import '../../core/constants.dart';
 import '../../models/flashcard.dart';
+import '../../providers/language_provider.dart';
 
-class FeedSideActions extends StatelessWidget {
+class FeedSideActions extends ConsumerWidget {
   final FlashcardModel card;
   final bool isFlipped;
   final VoidCallback onFlip;
@@ -24,27 +26,29 @@ class FeedSideActions extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(languageProvider).t;
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // 1. Mastered Button (SM-2 Good/Easy rating)
+          // 1. Mastered Button
           _buildActionButton(
             icon: Icons.check_circle_rounded,
             color: AppColors.primary,
-            label: 'حفظتُها',
+            label: t('action.mastered'),
             onTap: onMastered,
             isGlowing: true,
           ),
           SizedBox(height: 14.h),
 
-          // 2. Review Later (SM-2 Hard/Again rating)
+          // 2. Review Later
           _buildActionButton(
             icon: Icons.replay_rounded,
             color: AppColors.accentGold,
-            label: 'إعادة',
+            label: t('action.review'),
             onTap: onReviewLater,
           ),
           SizedBox(height: 14.h),
@@ -53,16 +57,16 @@ class FeedSideActions extends StatelessWidget {
           _buildActionButton(
             icon: isFlipped ? Icons.flip_to_front_rounded : Icons.flip_to_back_rounded,
             color: AppColors.accentBlue,
-            label: isFlipped ? 'السؤال' : 'الإجابة',
+            label: isFlipped ? t('action.question') : t('action.answer'),
             onTap: onFlip,
           ),
           SizedBox(height: 14.h),
 
-          // 4. Favorite / Bookmark (Heart)
+          // 4. Favorite / Bookmark
           _buildActionButton(
             icon: card.isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
             color: card.isFavorite ? AppColors.accentRose : AppColors.textSecondary,
-            label: card.isFavorite ? 'مفضلة' : 'حفظ',
+            label: card.isFavorite ? t('action.favorite') : t('action.save'),
             onTap: onToggleFavorite,
           ),
           SizedBox(height: 14.h),
@@ -71,7 +75,7 @@ class FeedSideActions extends StatelessWidget {
           _buildActionButton(
             icon: Icons.volume_up_rounded,
             color: AppColors.textSecondary,
-            label: 'استماع',
+            label: t('action.listen'),
             onTap: onAudioPlay,
           ),
         ],

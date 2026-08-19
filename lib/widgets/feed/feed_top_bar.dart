@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import '../../core/constants.dart';
+import '../../providers/language_provider.dart';
 import '../../providers/tiktok_feed_provider.dart';
+import '../language_selector_sheet.dart';
 
 class FeedTopBar extends ConsumerWidget {
   const FeedTopBar({super.key});
@@ -12,6 +14,8 @@ class FeedTopBar extends ConsumerWidget {
     final streakDays = ref.watch(tiktokFeedProvider.select((s) => s.streakDays));
     final masteredTodayCount = ref.watch(tiktokFeedProvider.select((s) => s.masteredTodayCount));
     final selectedSubject = ref.watch(tiktokFeedProvider.select((s) => s.selectedSubject));
+    final currentLang = ref.watch(languageProvider).languageCode.toUpperCase();
+    final t = ref.watch(languageProvider).t;
     final feedNotifier = ref.read(tiktokFeedProvider.notifier);
 
     return Container(
@@ -34,7 +38,7 @@ class FeedTopBar extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Row 1: Streak + Daily Goal
+          // Row 1: Streak + Daily Goal + Language Switcher
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -51,7 +55,7 @@ class FeedTopBar extends ConsumerWidget {
                     Text('🔥', style: TextStyle(fontSize: 12.sp)),
                     SizedBox(width: 4.w),
                     Text(
-                      '$streakDays أيام مستمرة',
+                      '$streakDays ${t('feed.streak')}',
                       style: TextStyle(
                         color: AppColors.accentGold,
                         fontWeight: FontWeight.bold,
@@ -59,6 +63,33 @@ class FeedTopBar extends ConsumerWidget {
                       ),
                     ),
                   ],
+                ),
+              ),
+
+              // Language Quick Switcher Pill
+              GestureDetector(
+                onTap: () => LanguageSelectorSheet.show(context),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceLight.withValues(alpha: 0.8),
+                    borderRadius: BorderRadius.circular(999.r),
+                    border: Border.all(color: AppColors.cardBorder),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.language_rounded, size: 12.sp, color: AppColors.primary),
+                      SizedBox(width: 4.w),
+                      Text(
+                        currentLang,
+                        style: TextStyle(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10.sp,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
@@ -75,7 +106,7 @@ class FeedTopBar extends ConsumerWidget {
                     Icon(Icons.stars_rounded, size: 13.sp, color: AppColors.primary),
                     SizedBox(width: 4.w),
                     Text(
-                      '$masteredTodayCount بطاقة أتقنتها',
+                      '$masteredTodayCount ${t('feed.mastered_today')}',
                       style: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
@@ -95,21 +126,21 @@ class FeedTopBar extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildSubjectTab(
-                label: '🎲 عشوائي',
+                label: t('feed.random'),
                 keyName: 'all',
                 isSelected: selectedSubject == 'all',
                 onTap: () => feedNotifier.setSubjectFilter('all'),
               ),
               SizedBox(width: 6.w),
               _buildSubjectTab(
-                label: '📜 التاريخ',
+                label: t('feed.history'),
                 keyName: 'history',
                 isSelected: selectedSubject == 'history',
                 onTap: () => feedNotifier.setSubjectFilter('history'),
               ),
               SizedBox(width: 6.w),
               _buildSubjectTab(
-                label: '🌍 الجغرافيا',
+                label: t('feed.geography'),
                 keyName: 'geography',
                 isSelected: selectedSubject == 'geography',
                 onTap: () => feedNotifier.setSubjectFilter('geography'),

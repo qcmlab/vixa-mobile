@@ -1,0 +1,246 @@
+class AppTranslations {
+  static const Map<String, Map<String, String>> translations = {
+    'ar': {
+      // Navigation
+      'nav.feed': 'تلقيم الحفظ',
+      'nav.home': 'الرئيسية',
+      'nav.curriculum': 'المناهج',
+      'nav.quizzes': 'الاختبارات',
+      'nav.profile': 'حسابي',
+
+      // Feed & Top Bar
+      'feed.random': '🎲 عشوائي',
+      'feed.history': '📜 التاريخ',
+      'feed.geography': '🌍 الجغرافيا',
+      'feed.streak': 'أيام مستمرة',
+      'feed.mastered_today': 'بطاقة أتقنتها',
+      'feed.empty_title': 'لا توجد بطاقات في هذا التصنيف',
+      'feed.empty_desc': 'اختر تصنيفاً آخر أو اضغط لتحديث التلقيم العشوائي.',
+      'feed.reload': 'تلقيم عشوائي جديد',
+
+      // Side Actions
+      'action.mastered': 'حفظتُها',
+      'action.review': 'إعادة',
+      'action.question': 'السؤال',
+      'action.answer': 'الإجابة',
+      'action.favorite': 'مفضلة',
+      'action.save': 'حفظ',
+      'action.listen': 'استماع',
+      'action.reading_audio': '🔊 جاري قراءة نص البطاقة صوتياً...',
+
+      // Feedback Bar
+      'feedback.question': 'ما مدى استيعابك وتذكرك لهذه المعلومة؟ 🤔',
+      'feedback.not_yet': 'لم أحفظ',
+      'feedback.partially': 'نصف حفظ',
+      'feedback.mastered': 'أتقنتُها',
+      'feedback.toast_not_yet': '🔁 لم تحفظها بعد (0%) - تمت إضافتها للتكرار القريب!',
+      'feedback.toast_partially': '⚡ استيعاب جزئي (50%) - تمت جدولة التثبيت',
+      'feedback.toast_mastered': '🎉 ممتاز! تم إتقان البطاقة بنجاح (100%)',
+      'feedback.celebration': 'أتقنتَها! تم تثبيت البطاقة',
+
+      // Card Badges & Reveal
+      'card.qcm_badge': 'سؤال تفاعلي (QCM)',
+      'card.qcm_explanation': 'التفسير البيداغوجي:',
+      'card.flip_badge': 'بطاقة استذكار ذكية',
+      'card.flip_hint': 'المس لقلب البطاقة وكشف الإجابة',
+      'card.flip_model_answer': 'الإجابة النموذجية للبكالوريا',
+      'card.date_badge': 'محطة وتاريخ مصيري',
+      'card.date_reveal': 'كشف الأهمية التاريخية',
+      'card.person_badge': 'شخصية تاريخية بارزة',
+      'card.person_reveal': 'كشف بطاقة الشخصية',
+      'card.term_badge': 'مصطلح ومفهوم أساسي',
+      'card.term_reveal': 'كشف التعريف والمصطلح',
+      'card.advice_badge': 'كبسولة الذاكرة الفائقة',
+      'card.easy': '🟢 سهل',
+      'card.medium': '🟡 متوسط',
+      'card.hard': '🔴 متقدم',
+
+      // Settings & Profile
+      'settings.title': 'الملف الشخصي والإعدادات',
+      'settings.language': 'لغة التطبيق (Language)',
+      'settings.current_lang': 'العربية (Arabic)',
+      'settings.select_language': 'اختر لغة التطبيق',
+      'settings.lockscreen': 'مراجعة قفل الشاشة عند فتح الهاتف',
+      'settings.lockscreen_desc': 'عرض بطاقة استذكار تلقائياً كلما فتحت هاتفك',
+      'settings.daily_goal': 'هدف الحفظ اليومي',
+      'settings.notifications': 'الإشعارات والتذكيرات',
+      'settings.logout': 'تسجيل الخروج',
+      'settings.cancel': 'إلغاء',
+
+      // Auth
+      'auth.title': 'تطبيق حافظ | Hafedh',
+      'auth.tagline': 'احفظ التاريخ والجغرافيا بذكاء وسهولة',
+      'auth.demo_mode': '🚀 تجربة فورية مباشرة (Demo Mode)',
+      'auth.demo_desc': 'تصفح تلقيم التيك توك والبطاقات دون الحاجة للخادم',
+      'auth.or_login': 'أو تسجيل الدخول بحسابك',
+      'auth.email': 'البريد الإلكتروني',
+      'auth.password': 'كلمة المرور',
+      'auth.login_btn': 'تسجيل الدخول',
+      'auth.no_account': 'ليس لديك حساب بعد؟',
+      'auth.register_btn': 'أنشئ حساباً جديداً',
+      'auth.server_config': 'إعداد عنوان الخادم (API URL)',
+    },
+
+    'fr': {
+      // Navigation
+      'nav.feed': 'Flux Mémorisation',
+      'nav.home': 'Accueil',
+      'nav.curriculum': 'Programmes',
+      'nav.quizzes': 'Quiz',
+      'nav.profile': 'Profil',
+
+      // Feed & Top Bar
+      'feed.random': '🎲 Aléatoire',
+      'feed.history': '📜 Histoire',
+      'feed.geography': '🌍 Géographie',
+      'feed.streak': 'Jours de suite',
+      'feed.mastered_today': 'Cartes maîtrisées',
+      'feed.empty_title': 'Aucune carte dans cette catégorie',
+      'feed.empty_desc': 'Choisissez une autre catégorie ou actualisez le flux.',
+      'feed.reload': 'Nouveau flux aléatoire',
+
+      // Side Actions
+      'action.mastered': 'Maîtrisé',
+      'action.review': 'Revoir',
+      'action.question': 'Question',
+      'action.answer': 'Réponse',
+      'action.favorite': 'Favoris',
+      'action.save': 'Enregistrer',
+      'action.listen': 'Écouter',
+      'action.reading_audio': '🔊 Lecture audio du texte en cours...',
+
+      // Feedback Bar
+      'feedback.question': 'Quel est votre niveau de mémorisation ? 🤔',
+      'feedback.not_yet': 'Pas encore',
+      'feedback.partially': '50% Moyen',
+      'feedback.mastered': 'Maîtrisé',
+      'feedback.toast_not_yet': '🔁 Pas encore retenu (0%) - Replanifié sous peu !',
+      'feedback.toast_partially': '⚡ Mémorisation partielle (50%) - Programmée',
+      'feedback.toast_mastered': '🎉 Bravo ! Carte maîtrisée avec succès (100%)',
+      'feedback.celebration': 'Bravo ! Carte mémorisée avec succès',
+
+      // Card Badges & Reveal
+      'card.qcm_badge': 'Question Interactive (QCM)',
+      'card.qcm_explanation': 'Explication pédagogique :',
+      'card.flip_badge': 'Flashcard Intelligente',
+      'card.flip_hint': 'Touchez pour retourner la carte',
+      'card.flip_model_answer': 'Réponse type pour le Baccalauréat',
+      'card.date_badge': 'Date & Chronologie clé',
+      'card.date_reveal': 'Révéler l\'importance historique',
+      'card.person_badge': 'Personnalité Historique',
+      'card.person_reveal': 'Révéler la fiche personnage',
+      'card.term_badge': 'Concept & Définition clé',
+      'card.term_reveal': 'Révéler la définition et mots-clés',
+      'card.advice_badge': 'Capsule Mémoire Flash',
+      'card.easy': '🟢 Facile',
+      'card.medium': '🟡 Moyen',
+      'card.hard': '🔴 Difficile',
+
+      // Settings & Profile
+      'settings.title': 'Profil et Paramètres',
+      'settings.language': 'Langue de l\'application',
+      'settings.current_lang': 'Français (French)',
+      'settings.select_language': 'Sélectionnez la langue',
+      'settings.lockscreen': 'Révision sur écran de verrouillage',
+      'settings.lockscreen_desc': 'Affiche une carte automatiquement au déverrouillage',
+      'settings.daily_goal': 'Objectif quotidien',
+      'settings.notifications': 'Notifications et rappels',
+      'settings.logout': 'Déconnexion',
+      'settings.cancel': 'Annuler',
+
+      // Auth
+      'auth.title': 'Application Hafedh | حافظ',
+      'auth.tagline': 'Mémorisez l\'histoire et la géographie intelligemment',
+      'auth.demo_mode': '🚀 Mode Démo Instantané',
+      'auth.demo_desc': 'Explorez le flux TikTok et les cartes sans serveur',
+      'auth.or_login': 'Ou connectez-vous à votre compte',
+      'auth.email': 'Adresse E-mail',
+      'auth.password': 'Mot de passe',
+      'auth.login_btn': 'Se connecter',
+      'auth.no_account': 'Pas encore de compte ?',
+      'auth.register_btn': 'Créer un compte',
+      'auth.server_config': 'Configurer l\'URL du Serveur',
+    },
+
+    'en': {
+      // Navigation
+      'nav.feed': 'Learning Feed',
+      'nav.home': 'Dashboard',
+      'nav.curriculum': 'Curriculum',
+      'nav.quizzes': 'Quizzes',
+      'nav.profile': 'Profile',
+
+      // Feed & Top Bar
+      'feed.random': '🎲 Random',
+      'feed.history': '📜 History',
+      'feed.geography': '🌍 Geography',
+      'feed.streak': 'Day Streak',
+      'feed.mastered_today': 'Cards Mastered',
+      'feed.empty_title': 'No cards available in this category',
+      'feed.empty_desc': 'Select another category or refresh the random feed.',
+      'feed.reload': 'New Random Feed',
+
+      // Side Actions
+      'action.mastered': 'Mastered',
+      'action.review': 'Review',
+      'action.question': 'Question',
+      'action.answer': 'Answer',
+      'action.favorite': 'Favorite',
+      'action.save': 'Save',
+      'action.listen': 'Listen',
+      'action.reading_audio': '🔊 Playing text speech...',
+
+      // Feedback Bar
+      'feedback.question': 'How well did you recall this item? 🤔',
+      'feedback.not_yet': 'Forgot',
+      'feedback.partially': '50% Medium',
+      'feedback.mastered': 'Mastered',
+      'feedback.toast_not_yet': '🔁 Not yet retained (0%) - Re-queued shortly!',
+      'feedback.toast_partially': '⚡ Partial recall (50%) - Scheduled for practice',
+      'feedback.toast_mastered': '🎉 Great! Card successfully mastered (100%)',
+      'feedback.celebration': 'Mastered! Card anchored to memory',
+
+      // Card Badges & Reveal
+      'card.qcm_badge': 'Interactive Quiz (MCQ)',
+      'card.qcm_explanation': 'Pedagogical Explanation:',
+      'card.flip_badge': 'Smart Flashcard',
+      'card.flip_hint': 'Tap to flip and reveal answer',
+      'card.flip_model_answer': 'Standard Model Answer for Baccalaureate',
+      'card.date_badge': 'Key Historical Date',
+      'card.date_reveal': 'Reveal Historical Context',
+      'card.person_badge': 'Key Historical Figure',
+      'card.person_reveal': 'Reveal Character Bio',
+      'card.term_badge': 'Key Concept & Definition',
+      'card.term_reveal': 'Reveal Definition & Keywords',
+      'card.advice_badge': 'Super Memory Capsule',
+      'card.easy': '🟢 Easy',
+      'card.medium': '🟡 Medium',
+      'card.hard': '🔴 Hard',
+
+      // Settings & Profile
+      'settings.title': 'Profile & Settings',
+      'settings.language': 'App Language',
+      'settings.current_lang': 'English',
+      'settings.select_language': 'Select App Language',
+      'settings.lockscreen': 'Lock Screen Card Review',
+      'settings.lockscreen_desc': 'Show a study card every time you unlock your phone',
+      'settings.daily_goal': 'Daily Memorization Goal',
+      'settings.notifications': 'Notifications & Reminders',
+      'settings.logout': 'Log Out',
+      'settings.cancel': 'Cancel',
+
+      // Auth
+      'auth.title': 'Hafedh App | حافظ',
+      'auth.tagline': 'Master History and Geography effortlessly',
+      'auth.demo_mode': '🚀 Instant Demo Mode',
+      'auth.demo_desc': 'Explore the TikTok feed & cards without a backend server',
+      'auth.or_login': 'Or login with your account',
+      'auth.email': 'Email Address',
+      'auth.password': 'Password',
+      'auth.login_btn': 'Sign In',
+      'auth.no_account': "Don't have an account?",
+      'auth.register_btn': 'Sign Up',
+      'auth.server_config': 'Configure Server API URL',
+    },
+  };
+}
