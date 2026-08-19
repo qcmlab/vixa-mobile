@@ -6,6 +6,7 @@ import '../../providers/dashboard_provider.dart';
 import '../../providers/language_provider.dart';
 import '../../services/lockscreen_service.dart';
 import '../../widgets/language_selector_sheet.dart';
+import '../settings/widget_settings_sheet.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -225,6 +226,37 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ),
                     ),
                   ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Outside Home Screen Widget Customization
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColors.cardBorder),
+                ),
+                child: ListTile(
+                  onTap: () => WidgetSettingsSheet.show(context),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.accentGold.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.widgets_rounded, color: AppColors.accentGold, size: 22),
+                  ),
+                  title: const Text(
+                    'تخصيص الويدجت الخارجي (Widget Settings)',
+                    style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary, fontSize: 14),
+                  ),
+                  subtitle: const Text(
+                    'تعديل مادة ونوع البطاقات وإعادة الترتيب التلقائي عند فتح الهاتف',
+                    style: TextStyle(color: AppColors.textMuted, fontSize: 11),
+                  ),
+                  trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppColors.textMuted),
                 ),
               ),
               const SizedBox(height: 24),

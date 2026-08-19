@@ -8,16 +8,19 @@ class WidgetSyncService {
 
   static String _formatTypeLabel(String type) {
     switch (type) {
+      case 'qcm':
+        return '❓ سؤال تفاعلي QCM';
       case 'date':
         return '📅 تاريخ مهم';
       case 'person':
         return '👤 شخصية تاريخية';
       case 'term':
         return '📖 مصطلح ومفهوم';
+      case 'advice':
+        return '💡 كبسولة الذاكرة';
       case 'event':
         return '🚩 حدث تاريخي';
       case 'fact':
-        return '💡 حقيقة ومعلومة';
       default:
         return '📝 بطاقة حفظ';
     }

@@ -4,6 +4,7 @@ import '../core/di/injection_container.dart';
 import '../core/storage/storage_service.dart';
 import '../features/feed/data/flashcard_repository.dart';
 import '../models/flashcard.dart';
+import '../services/widget_sync_service.dart';
 import '../widgets/feed/memorization_feedback_bar.dart';
 
 class TiktokFeedState {
@@ -156,6 +157,9 @@ class TiktokFeedNotifier extends StateNotifier<TiktokFeedState> {
         isLoading: false,
         currentIndex: 0,
       );
+
+      // Auto-sync prioritized cards to the Android outside widget
+      WidgetSyncService.syncFlashcards(prioritizedCards);
 
       // Flush any queued offline reviews in background
       _repository.flushOfflineReviews();

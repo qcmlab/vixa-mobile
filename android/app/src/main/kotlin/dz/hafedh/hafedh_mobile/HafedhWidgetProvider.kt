@@ -48,6 +48,45 @@ class HafedhWidgetProvider : AppWidgetProvider() {
                 "📅 تاريخ مهم"
             )
         )
+
+        fun shuffleOrAdvanceNextCard(context: Context) {
+            try {
+                val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                val widgetPrefs = context.getSharedPreferences("HomeWidgetPreferences", Context.MODE_PRIVATE)
+                val flutterPrefs = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+
+                var totalCount = widgetPrefs.getInt("fc_count", 0)
+                if (totalCount == 0) {
+                    totalCount = flutterPrefs.getInt("flutter.fc_count", 0)
+                }
+                if (totalCount == 0) {
+                    totalCount = DEFAULT_CARDS.size
+                }
+
+                val current = prefs.getInt(KEY_CURRENT_INDEX, 0)
+                val nextIndex = if (totalCount > 1) {
+                    // Pick next random or sequential index
+                    (current + 1 + (0 until (totalCount - 1)).random()) % totalCount
+                } else {
+                    0
+                }
+
+                prefs.edit()
+                    .putInt(KEY_CURRENT_INDEX, nextIndex)
+                    .putBoolean(KEY_IS_FLIPPED, false)
+                    .apply()
+
+                val appWidgetManager = AppWidgetManager.getInstance(context)
+                val thisAppWidget = ComponentName(context.packageName, HafedhWidgetProvider::class.java.name)
+                val appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget)
+                if (appWidgetIds != null && appWidgetIds.isNotEmpty()) {
+                    val provider = HafedhWidgetProvider()
+                    provider.onUpdate(context, appWidgetManager, appWidgetIds)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -77,7 +116,7 @@ class HafedhWidgetProvider : AppWidgetProvider() {
         }
     }
 
-    private fun updateAllWidgets(context: Context) {
+    fun updateAllWidgets(context: Context) {
         try {
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val thisAppWidget = ComponentName(context.packageName, HafedhWidgetProvider::class.java.name)
