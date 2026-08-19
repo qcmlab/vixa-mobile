@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/di/injection_container.dart';
 import '../features/feed/data/flashcard_repository.dart';
 import '../models/flashcard.dart';
+import '../widgets/feed/memorization_feedback_bar.dart';
 
 class TiktokFeedState {
   final List<FlashcardModel> cards;
@@ -65,9 +66,9 @@ class TiktokFeedNotifier extends StateNotifier<TiktokFeedState> {
       );
 
       // Filter by subject if specified
-      List<FlashcardModel> filteredCards = loadedCards;
+      List<FlashcardModel> filteredCards = List.from(loadedCards);
       if (state.selectedSubject != 'all') {
-        filteredCards = loadedCards.where((c) {
+        filteredCards = filteredCards.where((c) {
           final sub = c.subjectName ?? '';
           if (state.selectedSubject == 'history') {
             return sub.contains('تاريخ') || c.type == 'date' || c.type == 'person';
@@ -78,13 +79,16 @@ class TiktokFeedNotifier extends StateNotifier<TiktokFeedState> {
         }).toList();
       }
 
+      // Always shuffle for random addictive TikTok feed order
+      filteredCards.shuffle();
+
       state = state.copyWith(
         cards: filteredCards,
         isLoading: false,
         currentIndex: 0,
       );
 
-      // Flush any queued offline reviews in the background
+      // Flush any queued offline reviews in background
       _repository.flushOfflineReviews();
     } catch (e) {
       state = state.copyWith(
@@ -121,13 +125,36 @@ class TiktokFeedNotifier extends StateNotifier<TiktokFeedState> {
     state = state.copyWith(cards: updated);
   }
 
-  Future<void> submitQuickReview(String cardId, int rating) async {
+  Future<void> submitFeedback(String cardId, FeedbackLevel level) async {
+    int rating = 3;
+    switch (level) {
+      case FeedbackLevel.notYet:
+        rating = 1; // Again / Failed
+        break;
+      case FeedbackLevel.partially:
+        rating = 3; // Hard / 50%
+        break;
+      case FeedbackLevel.mastered:
+        rating = 5; // Easy / 100%
+        break;
+    }
+
     await _repository.submitCardReview(cardId, rating);
 
-    if (rating >= 4) {
+    if (level == FeedbackLevel.mastered) {
       state = state.copyWith(
         masteredTodayCount: state.masteredTodayCount + 1,
       );
+    } else if (level == FeedbackLevel.notYet) {
+      // Re-insert the card 3 to 5 items down the current list so student sees it again soon!
+      final cardsList = List<FlashcardModel>.from(state.cards);
+      final cardIdx = cardsList.indexWhere((c) => c.id == cardId);
+      if (cardIdx != -1) {
+        final card = cardsList[cardIdx];
+        final reinsertIdx = (cardIdx + 4).clamp(0, cardsList.length);
+        cardsList.insert(reinsertIdx, card);
+        state = state.copyWith(cards: cardsList);
+      }
     }
   }
 }

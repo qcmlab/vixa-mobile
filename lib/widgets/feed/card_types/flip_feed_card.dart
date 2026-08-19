@@ -2,50 +2,64 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../core/constants.dart';
 import '../../../models/flashcard.dart';
+import '../memorization_feedback_bar.dart';
 
 class FlipFeedCard extends StatelessWidget {
   final FlashcardModel card;
   final bool isFlipped;
   final VoidCallback onFlip;
+  final Function(FeedbackLevel level)? onFeedback;
 
   const FlipFeedCard({
     super.key,
     required this.card,
     required this.isFlipped,
     required this.onFlip,
+    this.onFeedback,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Center(
-        child: GestureDetector(
-          onTap: onFlip,
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 450),
-            transitionBuilder: (widget, anim) {
-              final rotate = Tween(begin: pi, end: 0.0).animate(anim);
-              return AnimatedBuilder(
-                animation: rotate,
-                child: widget,
-                builder: (context, child) {
-                  final isUnder = (ValueKey(isFlipped) != child!.key);
-                  var tilt = ((anim.value - 0.5).abs() - 0.5) * 0.002;
-                  tilt *= isUnder ? -1.0 : 1.0;
-                  final value = isUnder ? min(rotate.value, pi / 2) : rotate.value;
-                  return Transform(
-                    transform: Matrix4.rotationY(value)..setEntry(3, 0, tilt),
-                    alignment: Alignment.center,
-                    child: child,
-                  );
-                },
-              );
-            },
-            child: isFlipped
-                ? _buildBackCard(key: const ValueKey(true))
-                : _buildFrontCard(key: const ValueKey(false)),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: onFlip,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 450),
+                  transitionBuilder: (widget, anim) {
+                    final rotate = Tween(begin: pi, end: 0.0).animate(anim);
+                    return AnimatedBuilder(
+                      animation: rotate,
+                      child: widget,
+                      builder: (context, child) {
+                        final isUnder = (ValueKey(isFlipped) != child!.key);
+                        var tilt = ((anim.value - 0.5).abs() - 0.5) * 0.002;
+                        tilt *= isUnder ? -1.0 : 1.0;
+                        final value = isUnder ? min(rotate.value, pi / 2) : rotate.value;
+                        return Transform(
+                          transform: Matrix4.rotationY(value)..setEntry(3, 0, tilt),
+                          alignment: Alignment.center,
+                          child: child,
+                        );
+                      },
+                    );
+                  },
+                  child: isFlipped
+                      ? _buildBackCard(key: const ValueKey(true))
+                      : _buildFrontCard(key: const ValueKey(false)),
+                ),
+              ),
+
+              // Feedback Bar when flipped to the answer
+              if (isFlipped && onFeedback != null)
+                MemorizationFeedbackBar(onFeedback: onFeedback!),
+            ],
           ),
         ),
       ),
@@ -56,8 +70,8 @@ class FlipFeedCard extends StatelessWidget {
     return Container(
       key: key,
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 380),
-      padding: const EdgeInsets.all(28),
+      constraints: const BoxConstraints(minHeight: 340),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -126,13 +140,13 @@ class FlipFeedCard extends StatelessWidget {
 
           // Question Body
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 36),
+            padding: const EdgeInsets.symmetric(vertical: 28),
             child: Text(
               card.question,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: AppColors.textPrimary,
-                fontSize: 22,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
                 height: 1.6,
               ),
@@ -172,8 +186,8 @@ class FlipFeedCard extends StatelessWidget {
     return Container(
       key: key,
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 380),
-      padding: const EdgeInsets.all(28),
+      constraints: const BoxConstraints(minHeight: 340),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -231,7 +245,7 @@ class FlipFeedCard extends StatelessWidget {
 
           // Answer Content
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            padding: const EdgeInsets.symmetric(vertical: 18),
             child: Column(
               children: [
                 Text(
@@ -239,13 +253,13 @@ class FlipFeedCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 18,
+                    fontSize: 17,
                     fontWeight: FontWeight.w700,
                     height: 1.6,
                   ),
                 ),
                 if (card.explanation != null && card.explanation!.isNotEmpty) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 14),
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -277,21 +291,7 @@ class FlipFeedCard extends StatelessWidget {
           ),
 
           // Footer
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.swipe_up_rounded, size: 16, color: AppColors.textMuted),
-              SizedBox(width: 6),
-              Text(
-                'اسحب للأعلى للانتقال للبطاقة التالية',
-                style: TextStyle(
-                  color: AppColors.textMuted,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
+          const SizedBox(height: 4),
         ],
       ),
     );

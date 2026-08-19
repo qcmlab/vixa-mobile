@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants.dart';
 import '../../providers/tiktok_feed_provider.dart';
 import '../../widgets/feed/feed_card_item.dart';
+import '../../widgets/feed/memorization_feedback_bar.dart';
 
 class TiktokFeedScreen extends ConsumerStatefulWidget {
   const TiktokFeedScreen({super.key});
@@ -24,6 +25,50 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _handleFeedbackAction(String cardId, FeedbackLevel level, int currentIndex) {
+    final feedNotifier = ref.read(tiktokFeedProvider.notifier);
+    feedNotifier.submitFeedback(cardId, level);
+
+    String message = '';
+    Color bgColor = AppColors.primary;
+
+    switch (level) {
+      case FeedbackLevel.notYet:
+        message = '🔁 لم تحفظها بعد (0%) - تمت إضافتها للتكرار القريب!';
+        bgColor = AppColors.ratingAgain;
+        break;
+      case FeedbackLevel.partially:
+        message = '⚡ استيعاب جزئي (50%) - تمت جدولة التثبيت';
+        bgColor = AppColors.accentGold;
+        break;
+      case FeedbackLevel.mastered:
+        message = '🎉 ممتاز! تم إتقان البطاقة بنجاح (100%)';
+        bgColor = AppColors.primary;
+        break;
+    }
+
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: const TextStyle(fontWeight: FontWeight.bold)),
+        duration: const Duration(milliseconds: 1400),
+        backgroundColor: bgColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+
+    // Auto-advance smoothly to next card after brief delay for smooth addictive learning
+    Future.delayed(const Duration(milliseconds: 700), () {
+      if (mounted && _pageController.hasClients) {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOutCubic,
+        );
+      }
+    });
   }
 
   void _showAudioSnackbar(String message) {
@@ -74,19 +119,7 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
                 final card = feedState.cards[index];
                 return FeedCardItem(
                   card: card,
-                  onMastered: () {
-                    feedNotifier.submitQuickReview(card.id, 5);
-                  },
-                  onReviewLater: () {
-                    feedNotifier.submitQuickReview(card.id, 2);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('🔁 ستظهر هذه البطاقة للمراجعة لاحقاً'),
-                        duration: Duration(milliseconds: 1200),
-                        backgroundColor: AppColors.accentGold,
-                      ),
-                    );
-                  },
+                  onFeedback: (level) => _handleFeedbackAction(card.id, level, index),
                   onToggleFavorite: () {
                     feedNotifier.toggleFavorite(card.id);
                   },
@@ -172,7 +205,7 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
                     const Icon(Icons.stars_rounded, size: 14, color: AppColors.primary),
                     const SizedBox(width: 4),
                     Text(
-                      '${feedState.masteredTodayCount} بطاقة اليوم',
+                      '${feedState.masteredTodayCount} بطاقة أتقنتها',
                       style: const TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
@@ -192,19 +225,19 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildSubjectTab(
-                label: '🌟 الكل',
+                label: '🎲 عشوائي (الكل)',
                 keyName: 'all',
                 isSelected: feedState.selectedSubject == 'all',
                 onTap: () => feedNotifier.setSubjectFilter('all'),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               _buildSubjectTab(
                 label: '📜 التاريخ',
                 keyName: 'history',
                 isSelected: feedState.selectedSubject == 'history',
                 onTap: () => feedNotifier.setSubjectFilter('history'),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               _buildSubjectTab(
                 label: '🌍 الجغرافيا',
                 keyName: 'geography',
@@ -228,7 +261,7 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : AppColors.surface.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(999),
@@ -247,7 +280,7 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
           label,
           style: TextStyle(
             color: isSelected ? Colors.white : AppColors.textSecondary,
-            fontSize: 12,
+            fontSize: 11,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
           ),
         ),
@@ -262,10 +295,10 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.style_outlined, size: 64, color: AppColors.textMuted),
+            const Icon(Icons.shuffle_rounded, size: 64, color: AppColors.textMuted),
             const SizedBox(height: 16),
             const Text(
-              'لا توجد بطاقات متاحة في هذا التصنيف',
+              'لا توجد بطاقات في هذا التصنيف',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -274,15 +307,15 @@ class _TiktokFeedScreenState extends ConsumerState<TiktokFeedScreen> {
             ),
             const SizedBox(height: 8),
             const Text(
-              'اختر تصنيفاً آخر أو اضغط لتحديث التلقيم الذكي.',
+              'اختر تصنيفاً آخر أو اضغط لتحديث التلقيم العشوائي.',
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: () => notifier.loadFeed(forceRefresh: true),
-              icon: const Icon(Icons.refresh_rounded),
-              label: const Text('إعادة تحميل التلقيم'),
+              icon: const Icon(Icons.shuffle_rounded),
+              label: const Text('تلقيم عشوائي جديد'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
